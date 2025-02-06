@@ -1,0 +1,598 @@
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display': isShow ? 'block':'none'}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-center w-100">Tax Invoice For Other</h5>
+        <button type="button" (click)="closeModel()" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mx-0 d-flex justify-content-center">
+          <fieldset *ngIf="!invoice_preview">
+            <legend>Tax Invoice</legend>
+            <div class="row mx-0">
+              <table class="table table-bordered">
+                <tr>
+                  <th colspan="4">{{seller_details.business_name}}</th>
+                  <th colspan="3">Invoice No.: </th>
+                  <th colspan="3">Dated: </th>
+                </tr>
+                <tr>
+                  <td colspan="4">{{seller_details.address1}}</td>
+                  <td colspan="3">
+                    <input type="text" name="invoice_number" [(ngModel)]="invoice_number" placeholder="Invoice Number">
+                  </td>
+                  <td colspan="3">
+                    <input type="date" name="invoice_date" [(ngModel)]="invoice_date">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4">{{seller_details.address2}}</td>
+                  <th colspan="3">Delivery Note</th>
+                  <th colspan="3">Mode/Terms of Payment</th>
+                </tr>
+                <tr>
+                  <td colspan="4">{{seller_details.address3}}</td>
+                  <td colspan="3">
+                    <input type="text" name="delivery_note" [(ngModel)]="delivery_note" placeholder="Develiry Note">
+                  </td>
+                  <td colspan="3">
+                    <input type="text" name="mode_of_payment" [(ngModel)]="mode_of_payment"
+                      placeholder="Mode/Terms Of Payment">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4">{{seller_details.address4}}</td>
+                  <th colspan="3">Supplier's Ref.</th>
+                  <th colspan="3">Other Reference(S)</th>
+                </tr>
+                <tr>
+                  <td colspan="4">GSTIN/UIN: {{seller_details.gst_no}}</td>
+                  <td colspan="3">
+                    <input type="text" name="suppliers_ref" [(ngModel)]="suppliers_ref" placeholder="Supplier's Ref">
+                  </td>
+                  <td colspan="3">
+                    <input type="text" name="other_ref" [(ngModel)]="other_ref" placeholder="Other Reference(s)">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4">State Name: {{seller_details.state}} | Code: {{seller_details.state_code}}</td>
+                  <th colspan="3">Buyer's Order No.</th>
+                  <th colspan="3">Dated</th>
+                </tr>
+                <tr>
+                  <th colspan="4">Buyer</th>
+                  <td colspan="3">
+                    <input type="text" name="buyers_order_no" [(ngModel)]="buyers_order_no"
+                      placeholder="Buyer's Order No.">
+                  </td>
+                  <td colspan="3">
+                    <input type="date" name="dated" [(ngModel)]="dated" placeholder="Dated">
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="4">{{buyer_details.business_name}}</th>
+                  <th colspan="3">Dispatch Docuement No.</th>
+                  <th colspan="3">Delivery Note Date</th>
+                </tr>
+                <tr>
+                  <td colspan="4">{{buyer_details.address1}}</td>
+                  <td colspan="3">
+                    <input type="text" name="dispatch_document_no" [(ngModel)]="dispatch_document_no"
+                      placeholder="Dispatch Docuement No.">
+                  </td>
+                  <td colspan="3">
+                    <input type="date" name="delivery_note_date" [(ngModel)]="delivery_note_date"
+                      placeholder="Delivery Note Date">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4">{{buyer_details.address2}}</td>
+                  <th colspan="3">Dispatch Through</th>
+                  <th colspan="3">Destination</th>
+                </tr>
+                <tr>
+                  <td colspan="4">{{buyer_details.address3}}</td>
+                  <td colspan="3">
+                    <input type="text" name="dispatch_through" [(ngModel)]="dispatch_through"
+                      placeholder="Dispatch Through">
+                  </td>
+                  <td colspan="3">
+                    <input type="text" name="destination" [(ngModel)]="destination" placeholder="Destination">
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="2.5">Cust GSTIN/UIN:</th>
+                  <td colspan="2.5">{{buyer_details.gst_no}}</td>
+                  <th colspan="5">Terms of Delivery</th>
+                </tr>
+                <tr>
+                  <th colspan="2.5">State Name:</th>
+                  <td colspan="2.5">{{buyer_details.state}}</td>
+                  <td colspan="5">
+                    <input type="text" name="terms_of_delivery" [(ngModel)]="terms_of_delivery"
+                      placeholder="Terms Of Delivery">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4">State Code: {{buyer_details.state_code}}</td>
+                  <td colspan="5"></td>
+                </tr>
+              </table>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Sr. No.</th>
+                    <th scope="col" colspan="3">Description of Goods</th>
+                    <th scope="col">HSN / SAC</th>
+                    <th scope="col">QTY</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Per</th>
+                    <th scope="col">Disc %</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let data of bill_data | keyvalue; index as i">
+                    <th class="text-right">{{i+1}}</th>
+                    <td class="text-left" colspan="3">
+                      <input type="text" value="{{data.value.description}}"
+                        (input)="updateBillData($event.target.value, data.key, 'description')">
+                    </td>
+                    <td class="text-right">
+                      <input type="text" value="{{data.value.hsn_code}}"
+                        (input)="updateBillData($event.target.value, data.key, 'hsn_code')">
+                    </td>
+                    <td class="text-right">{{data.value.data.length}} nos</td>
+                    <td class="text-right">{{data.key}}</td>
+                    <td class="text-right">nos</td>
+                    <td class="text-right">{{data.value.discount}}</td>
+                    <th class="text-right">{{data.value.total_amount}}</th>
+                  </tr>
+                  <tr *ngFor="let data of bill_data | keyvalue; index as i">
+                    <th class="text-right">{{bill_data_count + i + 1}}</th>
+                    <td class="text-left" colspan="3">
+                      <input type="text" value="{{discountDesc}}" (input)="updateDisDesction($event.target.value)">
+                    </td>
+                    <td class="text-right">
+                      <!-- {{data.value.hsn_code}} -->
+                    </td>
+                    <td class="text-right">{{data.value.data.length}} nos</td>
+                    <td class="text-right">{{data.value.discount_amount }}</td>
+                    <td class="text-right">nos</td>
+                    <td class="text-right"></td>
+                    <td class="text-right">{{data.value.discount_total}}</td>
+                  </tr>
+                  <tr>
+                    <th class="text-right">{{bill_data_count * 2 + 1}}</th>
+                    <td class="text-left" colspan="3">Total Payable before GST</td>
+                    <td class="text-right"></td>
+                    <td class="text-right">{{total_quantity}} nos</td>
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                    <th class="text-right">{{total_bill_before_gst}}</th>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <th class="text-right" colspan="3">Output CGST</th>
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                    <td class="text-right">
+                      <input type="text" value="{{cgst}}" (keypress)="isNumber($event)"
+                        (input)="updateGST($event.target.value, 'cgst')">
+                    </td>
+                    <td class="text-left">%</td>
+                    <td class="text-right"></td>
+                    <td class="text-right">{{cgst_amount}}</td>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <th class="text-right" colspan="3">Output SGST</th>
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                    <td class="text-right">
+                      <input type="text" value="{{sgst}}" (keypress)="isNumber($event)"
+                        (input)="updateGST($event.target.value, 'sgst')">
+                    </td>
+                    <td class="text-left">%</td>
+                    <td class="text-right"></td>
+                    <td class="text-right">{{sgst_amount}}</td>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <th class="text-right" colspan="3">Output IGST</th>
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                    <td class="text-right">
+                      <input type="text" value="{{igst}}" (keypress)="isNumber($event)"
+                        (input)="updateGST($event.target.value, 'igst')">
+                    </td>
+                    <td class="text-left">%</td>
+                    <td class="text-right"></td>
+                    <td class="text-right">{{igst_amount}}</td>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <th class="text-right" colspan="3">Total</th>
+                    <td class="text-right"></td>
+                    <th class="text-right">{{total_quantity + 3}} nos</th>
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                    <th class="text-right">{{total_bill}}</th>
+                  </tr>
+                  <tr>
+                    <th class="text-left" colspan="4">Amount Chargeable (in words)</th>
+                    <th class="text-right" colspan="6">E & OE</th>
+                  </tr>
+                  <tr>
+                    <th class="text-left" colspan="10">{{total_bill_in_words}}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="2">HSN/SAC</th>
+                    <th>Taxable</th>
+                    <th colspan="2">Integrated Tax</th>
+                    <th colspan="2">Central Tax</th>
+                    <th colspan="2">State Tax</th>
+                    <th>Total</th>
+                  </tr>
+                  <tr>
+                    <th colspan="2"></th>
+                    <th class="text-left">Value</th>
+                    <th class="text-left">Rate</th>
+                    <th class="text-left">AMT</th>
+                    <th class="text-left">Rate</th>
+                    <th class="text-left">AMT</th>
+                    <th class="text-left">Rate</th>
+                    <th class="text-left">AMT</th>
+                    <th class="text-left">Tax Amount</th>
+                  </tr>
+                  <tr>
+                    <td class="text-right" colspan="2">
+                      <input type="text" [(ngModel)]="hsn_code">
+                    </td>
+                    <td class="text-right">{{total_bill_before_gst}}</td>
+                    <td class="text-right">{{igst}}%</td>
+                    <td class="text-right">{{igst_amount}}</td>
+                    <td class="text-right">{{cgst}}%</td>
+                    <td class="text-right">{{cgst_amount}}</td>
+                    <td class="text-right">{{sgst}}%</td>
+                    <td class="text-right">{{sgst_amount}}</td>
+                    <td class="text-right">{{gst_amount}}</td>
+                  </tr>
+                  <tr>
+                    <th class="text-right" colspan="2">Total</th>
+                    <th class="text-right">{{total_bill}}</th>
+                    <td class="text-right"></td>
+                    <th class="text-right">{{igst_amount}}</th>
+                    <td class="text-right"></td>
+                    <td class="text-right">{{cgst_amount}}</td>
+                    <td class="text-right"></td>
+                    <td class="text-right">{{sgst_amount}}</td>
+                    <th class="text-right">{{gst_amount}}</th>
+                  </tr>
+                  <tr>
+                    <th class="text-left" colspan="2">Tax Amount (In Words):</th>
+                    <th class="text-left" colspan="8">{{gst_amount_in_words}}</th>
+                  </tr>
+                  <tr>
+                    <th class="text-left" colspan="1.5">Company's PAN:</th>
+                    <td class="text-left" colspan="1.5">{{seller_details.pan_no}}</td>
+                    <th class="text-center" colspan="8" rowspan="3" style="vertical-align: top;">
+                      for {{seller_details.business_name}}
+                      <div style="margin-top: 50px;" *ngIf="affix_authorised_signatory">
+                        <img src="/assets/images/HarshadaBusinessSolutionSignatory.png"
+                          style="width: 375px; height: 125px"
+                          *ngIf="seller_details.business_name === 'HARSHADA BUSINESS SOLUTIONS'" />
+                        <img src="/assets/images/AlphaOmegaServiceSignatory.jpg" style="width: 375px; height: 125px"
+                          *ngIf="seller_details.business_name === 'ALPHA OMEGA SERVICE'" />
+                      </div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th colspan="2">
+                      <p class="mb-0">Declaration: We declare that this invoice shows actual price of</p>
+                      <p class="mb-0">the goods described and that all particulars are true and correct </p>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="text-left" colspan="2">
+                      <p>Bank Details for the Payment</p>
+                      <p class="mb-0">{{seller_details.business_name}}</p>
+                      <p class="mb-0">{{seller_details.bank_name}}</p>
+                      <p class="mb-0">A/C No.: {{seller_details.account_no}}</p>
+                      <p class="mb-0">{{seller_details.bank_address}}</p>
+                      <p class="mb-0">IFSC Code: {{seller_details.ifsc_code}}</p>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th class="text-center" colspan="10">This is Computer Generated Invoice</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </fieldset>
+
+          <div *ngIf="invoice_preview" id="invoice_content" class="row mx-0" #invoice_content>
+            <table class="table table-bordered">
+              <tr>
+                <th class="text-center" colspan="10">Tax Invoice</th>
+              </tr>
+              <tr>
+                <th colspan="4">{{seller_details.business_name}}</th>
+                <th colspan="3">Invoice No.: </th>
+                <th colspan="3">Dated: </th>
+              </tr>
+              <tr *ngIf="seller_details.address1?.length > 0 || invoice_number?.length > 0 || invoice_date?.length > 0">
+                <td colspan="4">{{seller_details.address1}}</td>
+                <td colspan="3">{{invoice_number}}</td>
+                <td colspan="3">{{invoice_date}}</td>
+              </tr>
+              <tr>
+                <td colspan="4">{{seller_details.address2}}</td>
+                <th colspan="3">Delivery Note</th>
+                <th colspan="3">Mode/Terms of Payment</th>
+              </tr>
+              <tr
+                *ngIf="seller_details.address3?.length > 0 || delivery_note?.length > 0 || mode_of_payment?.length > 0">
+                <td colspan="4">{{seller_details.address3}}</td>
+                <td colspan="3">{{delivery_note}}</td>
+                <td colspan="3">{{mode_of_payment}}</td>
+              </tr>
+              <tr>
+                <td colspan="4">{{seller_details.address3}}</td>
+                <th colspan="3">Supplier's Ref.</th>
+                <th colspan="3">Other Reference(S)</th>
+              </tr>
+              <tr>
+                <td colspan="4">GSTIN/UIN: {{seller_details.gst_no}}</td>
+                <td colspan="3">{{suppliers_ref}}</td>
+                <td colspan="3">{{other_ref}}</td>
+              </tr>
+              <tr>
+                <td colspan="4">State Name: {{seller_details.state}} | Code: {{seller_details.state_code}}</td>
+                <th colspan="3">Buyer's Order No.</th>
+                <th colspan="3">Dated</th>
+              </tr>
+              <tr>
+                <th colspan="4">Buyer</th>
+                <td colspan="3">{{buyers_order_no}}</td>
+                <td colspan="3">{{dated}}</td>
+              </tr>
+              <tr>
+                <th colspan="4">{{buyer_details.business_name}}</th>
+                <th colspan="3">Dispatch Docuement No.</th>
+                <th colspan="3">Delivery Note Date</th>
+              </tr>
+              <tr
+                *ngIf="buyer_details.address1?.length > 0 || dispatch_document_no?.length > 0 || delivery_note_date?.length > 0">
+                <td colspan="4">{{buyer_details.address1}}</td>
+                <td colspan="3">{{dispatch_document_no}}</td>
+                <td colspan="3">{{delivery_note_date}}</td>
+              </tr>
+              <tr>
+                <td colspan="4">{{buyer_details.address2}}</td>
+                <th colspan="3">Dispatch Through</th>
+                <th colspan="3">Destination</th>
+              </tr>
+              <tr *ngIf="buyer_details?.length > 0 || dispatch_through?.length > 0 || destination?.length > 0">
+                <td colspan="4">{{buyer_details.address3}}</td>
+                <td colspan="3">{{dispatch_through}}</td>
+                <td colspan="3">{{destination}}</td>
+              </tr>
+              <tr>
+                <th colspan="2.5">Cust GSTIN/UIN:</th>
+                <td colspan="2.5">{{buyer_details.gst_no}}</td>
+                <th colspan="5">Terms of Delivery</th>
+              </tr>
+              <tr>
+                <th colspan="2.5">State Name:</th>
+                <td colspan="2.5">{{buyer_details.state}}</td>
+                <td colspan="5">{{terms_of_delivery}}</td>
+              </tr>
+              <tr>
+                <td colspan="4">State Code: {{buyer_details.state_code}}</td>
+                <td colspan="5"></td>
+              </tr>
+            </table>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="border-bottom: none;" scope="col">Sr. No.</th>
+                  <th style="border-bottom: none;" scope="col" colspan="3">Description of Goods</th>
+                  <th style="border-bottom: none;" scope="col">HSN / SAC</th>
+                  <th style="border-bottom: none;" scope="col">QTY</th>
+                  <th style="border-bottom: none;" scope="col">Rate</th>
+                  <th style="border-bottom: none;" scope="col">Per</th>
+                  <th style="border-bottom: none;" scope="col">Disc %</th>
+                  <th style="border-bottom: none;" scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of bill_data | keyvalue; let i = index">
+                  <th class="text-right">{{i + 1}}</th>
+                  <td class="text-left" colspan="3">{{data.value.description}}</td>
+                  <td class="text-right">{{data.value.hsn_code}}</td>
+                  <td class="text-right">{{data.value.data.length}} nos</td>
+                  <td class="text-right">{{data.key}}</td>
+                  <td class="text-right">nos</td>
+                  <td class="text-right">{{data.value.discount}}</td>
+                  <th class="text-right">{{data.value.total_amount}}</th>
+                </tr>
+                <ng-container *ngIf="discountDesc">
+                  <tr *ngFor="let data of bill_data | keyvalue; let i = index">
+                    <th class="text-right">{{bill_data_count + i + 1}}</th>
+                    <td class="text-left" colspan="3">{{discountDesc}}</td>
+                    <td class="text-right"></td>
+                    <td class="text-right"> nos</td>
+                    <td class="text-right"></td>
+                    <td class="text-right">nos</td>
+                    <td class="text-right"></td>
+                    <td class="text-right"></td>
+                  </tr>
+                </ng-container>
+
+
+                <tr *ngFor="let data of bill_data | keyvalue; let i = index">
+                  <th class="text-right">{{bill_data_count + i + 1+ (discountDesc ? 1 : 0)}}</th>
+                  <td class="text-left" colspan="3">{{ 'Discount' }}</td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{data.value.data.length}} nos</td>
+                  <td class="text-right">{{data.value.discount_amount}}</td>
+                  <td class="text-right">nos</td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{data.value.discount_total}}</td>
+                </tr>
+
+                <tr>
+                  <th class="text-right">{{bill_data_count * 2 + 1 + (discountDesc ? 1 : 0)}}</th>
+                  <td class="text-left" colspan="3">Total Payable before GST</td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{total_quantity}} nos</td>
+                  <td class="text-right"></td>
+                  <td class="text-right"></td>
+                  <td class="text-right"></td>
+                  <th class="text-right">{{total_bill_before_gst}}</th>
+                </tr>
+                <tr>
+                  <th></th>
+                  <th class="text-right" colspan="3">Output CGST {{cgst}}%</th>
+                  <td class="text-right"></td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{cgst}}</td>
+                  <td class="text-left">%</td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{cgst_amount}}</td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <th class="text-right" colspan="3">Output SGST {{sgst}}%</th>
+                  <td class="text-right"></td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{sgst}}</td>
+                  <td class="text-left">%</td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{sgst_amount}}</td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <th class="text-right" colspan="3">Output IGST</th>
+                  <td class="text-right"></td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{igst}}</td>
+                  <td class="text-left">%</td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{gst_amount}}</td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <th class="text-right" colspan="3">Total</th>
+                  <td class="text-right"></td>
+                  <th class="text-right">{{total_quantity + 3}} nos</th>
+                  <td class="text-right"></td>
+                  <td class="text-right"></td>
+                  <td class="text-right"></td>
+                  <th class="text-right">{{total_bill}}</th>
+                </tr>
+                <tr>
+                  <th class="text-left" colspan="4">Amount Chargeable (in words)</th>
+                  <th class="text-right" colspan="6">E & OE</th>
+                </tr>
+                <tr>
+                  <th class="text-left" colspan="10">{{total_bill_in_words}}</th>
+                </tr>
+                <tr>
+                  <th colspan="2">HSN/SAC</th>
+                  <th>Taxable</th>
+                  <th colspan="2">Integrated Tax</th>
+                  <th colspan="2">Central Tax</th>
+                  <th colspan="2">State Tax</th>
+                  <th>Total</th>
+                </tr>
+                <tr>
+                  <th colspan="2"></th>
+                  <th class="text-left">Value</th>
+                  <th class="text-left">Rate</th>
+                  <th class="text-left">AMT</th>
+                  <th class="text-left">Rate</th>
+                  <th class="text-left">AMT</th>
+                  <th class="text-left">Rate</th>
+                  <th class="text-left">AMT</th>
+                  <th class="text-left">Tax Amount</th>
+                </tr>
+                <tr>
+                  <td class="text-right" colspan="2">{{hsn_code}}</td>
+                  <td class="text-right">{{total_bill_before_gst}}</td>
+                  <td class="text-right">{{igst}}%</td>
+                  <td class="text-right">{{igst_amount}}</td>
+                  <td class="text-right">{{cgst}}%</td>
+                  <td class="text-right">{{cgst_amount}}</td>
+                  <td class="text-right">{{sgst}}%</td>
+                  <td class="text-right">{{sgst_amount}}</td>
+                  <td class="text-right">{{gst_amount}}</td>
+                </tr>
+                <tr>
+                  <th class="text-right" colspan="2">Total</th>
+                  <th class="text-right">{{total_bill}}</th>
+                  <td class="text-right"></td>
+                  <th class="text-right">{{igst_amount}}</th>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{cgst_amount}}</td>
+                  <td class="text-right"></td>
+                  <td class="text-right">{{sgst_amount}}</td>
+                  <th class="text-right">{{gst_amount}}</th>
+                </tr>
+                <tr>
+                  <th class="text-left" colspan="2">Tax Amount (In Words):</th>
+                  <th class="text-left" colspan="8">{{gst_amount_in_words}}</th>
+                </tr>
+                <tr>
+                  <th class="text-left" colspan="1.5">Company's PAN:</th>
+                  <td class="text-left" colspan="1.5">{{seller_details.pan_no}}</td>
+                  <th class="text-center" colspan="8" rowspan="3" style="vertical-align: top;">
+                    for {{seller_details.business_name}}
+                    <div style="margin-top: 20px;" *ngIf="affix_authorised_signatory">
+                      <img src="/assets/images/HarshadaBusinessSolutionSignatory.png" style="width: 150px; height: 50px"
+                        *ngIf="seller_details?.business_name === 'HARSHADA BUSINESS SOLUTIONS'" />
+                      <img src="/assets/images/AlphaOmegaServiceSignatory.jpg" style="width: 150px; height: 50px"
+                        *ngIf="seller_details?.business_name === 'ALPHA OMEGA SERVICE'" />
+                    </div>
+                  </th>
+                </tr>
+                <tr>
+                  <th style="border-right: none;" colspan="2">
+                    <p class="mb-0">Declaration: We declare that this invoice shows actual price of</p>
+                    <p class="mb-0">the goods described and that all particulars are true and correct </p>
+                  </th>
+                </tr>
+                <tr>
+                  <th style="border-right: none;" class="text-left" colspan="2">
+                    <p>Bank Details for the Payment</p>
+                    <p class="mb-0">{{seller_details.business_name}}</p>
+                    <p class="mb-0">{{seller_details.bank_name}}</p>
+                    <p class="mb-0">A/C No.: {{seller_details.account_no}}</p>
+                    <p class="mb-0">{{seller_details.bank_address}}</p>
+                    <p class="mb-0">IFSC Code: {{seller_details.ifsc_code}}</p>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="text-center" colspan="10">This is Computer Generated Invoice</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="downloadInvoice()" *ngIf="invoice_preview">Print</button>
+        <button type="button" class="btn btn-primary" (click)="updatePreview()" *ngIf="invoice_preview">Edit</button>
+        <button type="button" class="btn btn-primary" (click)="updatePreview()"
+          *ngIf="!invoice_preview">Preview</button>
+        <button type="button" class="btn btn-primary" *ngIf="!invoice_preview">Save changes</button>
+        <button type="button" (click)="closeModel()" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

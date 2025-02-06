@@ -1,0 +1,98 @@
+@import '../../../assets/scss/lib.scss';
+
+section#priceSec aside {
+    border-radius: 20px;
+    width: 100%;
+    margin: 10px 0;
+    text-align: center;
+    -webkit-box-shadow: 2px 2px 15px 0 rgb(104, 104, 104);
+    box-shadow: 2px 2px 15px 0 rgb(104, 104, 104);
+    background-color: #ffffff;
+
+    @include sm {
+
+        width: calc(90% / 2);
+    }
+
+    @include md {
+        width: calc(97% / 3);
+    }
+}
+
+section#priceSec aside:last-child {
+    width: 100%;
+    @include md {
+        width: calc(97% / 3);
+    }
+}
+
+section#priceSec aside h3 {
+    border-radius: 20px 20px 0 0;
+    background-color: #ff5834;
+    color: #ffffff;
+    padding: 20px 0;
+    font-size: 22px;
+    margin: 0;
+}
+
+section#priceSec aside h4 {
+    color: #fff;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 120px;
+    font-weight: bold;
+    font-size: 28px;
+    font-family: 'Alata', sans-serif;
+    margin: -50px auto 0 auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('/assets/icons/price-label.svg');
+}
+
+section#priceSec aside h5 {
+    padding: 10px 0;
+    color: #ff5834;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: 'Alata', sans-serif;
+    border-bottom: #f0a200 solid thin;
+}
+
+section#priceSec aside img { width: 100%; }
+
+section#priceSec aside ul li {
+    list-style: none;
+    padding: 8px 0;
+    text-align: left;
+    text-indent: 10px;
+    font-size: 13px;
+}
+
+section#priceSec aside ul li span {
+    display: inline-block;
+    vertical-align: middle;
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('/assets/icons/check-mark.svg');
+}
+
+section#priceSec aside a {
+    background-color: #ff5834;
+    color: #ffffff;
+    padding: 5px 30px;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    transition: 0.2s all linear;
+    -webkit-box-shadow: 2px 2px 15px 0 rgb(104, 104, 104);
+    box-shadow: 2px 2px 15px 0 rgb(104, 104, 104);
+}
+
+section#priceSec aside a:hover { background-color: #F0A200; }

@@ -1,0 +1,16 @@
+<section id="priceSec" class="py-5 whiteBg" *ngIf="planList">
+    <div class="container-fluid">
+        <div class="d-flex flex-column flex-sm-row flex-nowrap flex-sm-wrap flex-lg-nowrap justify-content-between">
+            <aside *ngFor="let plan of planList">
+                <h3>{{plan.title}}</h3>
+                <img src="{{plan.imgUrl}}" alt="{{plan.title}}" />
+                <h4>${{plan.amount}}</h4>
+                <h5>Incl Tax</h5>
+                <ul>
+                    <li *ngFor="let lt of planFList(plan.features)" ><span></span> {{lt}}</li>
+                </ul>
+                <a href="https://travelvisaguru.com/booking/{{plan.url}}/{{web}}" class="btn" target="_blank">Click here to Book</a>
+            </aside>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,316 @@
+<form [formGroup]="frm">
+    <div class="row">
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>First Name </label>
+            <input type="text" placeholder="First_Name"
+                [ngClass]="{'hasError': isSubmitted && frm.get('First_Name').hasError('required')}"
+                formControlName="First_Name" />
+            <!-- <span *ngIf="isSubmitted && frm.get('First_Name').hasError('required')" class="error">Please
+                mention First Name</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Middle Name</label>
+            <input type="text" placeholder="Middle Name"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Middle_Name').hasError('required')}"
+                formControlName="Middle_Name" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Middle_Name').hasError('required')" class="error">Please
+                mention Middle_Name</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Last Name</label>
+            <input type="text" placeholder="Last Name"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Last_Name').hasError('required')}"
+                formControlName="Last_Name" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Last_Name').hasError('required')" class="error">Please
+                mention Last Name</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Gender</label>
+            <select placeholder="Gender" [ngClass]="{'hasError': isSubmitted && frm.get('Gender').hasError('required')}"
+                formControlName="Gender">
+                <option value="-1">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            <!-- <span *ngIf="isSubmitted && frm.get('Gender').hasError('required')" class="error">Please
+              mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Father First Name</label>
+            <input type="text" placeholder="Father First Name"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Father_First_Name').hasError('required')}"
+                formControlName="Father_First_Name" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Father_First_Name').hasError('required')" class="error">Please
+                mention Father_First_Name</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Father Middle Name</label>
+            <input type="text" placeholder="Father Middle Name"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Father_Middle_Name').hasError('required')}"
+                formControlName="Father_Middle_Name" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Father_Middle_Name').hasError('required')" class="error">Please
+                mention Father_Middle_Name</span> -->
+        </div>
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Father Last Name</label>
+            <input type="text" placeholder="Father Last Name"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Father_Last_Name').hasError('required')}"
+                formControlName="Father_Last_Name" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Father_Last_Name').hasError('required')" class="error">Please
+                mention Father_Last_Name</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>DOB</label>
+            <input type="text" placeholder="DOB" type="date"
+                [ngClass]="{'hasError': isSubmitted && frm.get('DOB').hasError('required')}" formControlName="DOB" />
+            <!-- <span *ngIf="isSubmitted && frm.get('DOB').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>PAN Number</label>
+            <input type="text" placeholder="PAN Number" maxlength="10"
+                [ngClass]="{'hasError': isSubmitted && frm.get('PAN_Number').hasError('required')}"
+                formControlName="PAN_Number" />
+            <span *ngIf="isSubmitted && frm.get('PAN_Number').hasError('required')" class="error">Please
+                mention PAN Number</span>
+            <span *ngIf="isSubmitted && frm.get('PAN_Number').hasError('pattern')" class="error">Invalid PAN Number
+            </span>
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Aadhaar Number</label>
+            <input type="text" placeholder="Aadhaar Number" (keypress)="isNumber($event)" maxlength="12"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Aadhaar_Number').hasError('required')}"
+                formControlName="Aadhaar_Number" />
+            <span *ngIf="isSubmitted && frm.get('Aadhaar_Number').hasError('required')" class="error">Please
+                mention Adhar No</span>
+            <span *ngIf="isSubmitted && (frm.get('Aadhaar_Number').hasError('minlength') ||
+                 frm.get('Aadhaar_Number').hasError('maxlength'))" class="error">Invalid Adhar
+                Number</span>
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Passport No</label>
+            <input type="text" placeholder="Passport No" maxlength="8"
+                [ngClass]="{'hasError': isSubmitted && frm.get('PassportNo').hasError('required')}"
+                formControlName="PassportNo" />
+            <span *ngIf="isSubmitted && frm.get('PassportNo').hasError('required')" class="error">Please
+                mention Passport No</span>
+            <span *ngIf="isSubmitted && frm.get('PassportNo').hasError('pattern')" class="error">Invalid Passport
+                Number</span>
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Flat/House NO</label>
+            <input type="text" placeholder="Flat/House NO"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Flat_House_NO').hasError('required')}"
+                formControlName="Flat_House_NO" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Flat_House_NO').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Building Name</label>
+            <input type="text" placeholder="Building Name"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Building_Name').hasError('required')}"
+                formControlName="Building_Name" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Building_Name').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Road/Street Name</label>
+            <input type="text" placeholder="Road/Street Name"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Road_Street_Name').hasError('required')}"
+                formControlName="Road_Street_Name" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Road_Street_Name').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Floor No</label>
+            <input type="text" placeholder="Floor No"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Floor_No').hasError('required')}"
+                formControlName="Floor_No" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Floor_No').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Locality</label>
+            <input type="text" placeholder="Locality"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Locality').hasError('required')}"
+                formControlName="Locality" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Locality').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Landmark</label>
+            <input type="text" placeholder="Landmark"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Landmark').hasError('required')}"
+                formControlName="Landmark" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Landmark').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State</label>
+            <select placeholder="State" [ngClass]="{'hasError': isSubmitted && frm.get('State').hasError('required')}"
+                formControlName="State">
+                <option value="-1">Select</option>
+                <option [value]="State" *ngFor="let State of StatesList">
+                    {{State}}</option>
+            </select>
+            <!-- <span *ngIf="isSubmitted && frm.get('State').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>City</label>
+            <input type="text" placeholder="City"
+                [ngClass]="{'hasError': isSubmitted && frm.get('City').hasError('required')}" formControlName="City" />
+            <!-- <span *ngIf="isSubmitted && frm.get('City').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Pin Code</label>
+            <input type="text" placeholder="Pin Code" (keypress)="isNumber($event)" maxlength="6"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Pincode').hasError('required')}"
+                formControlName="Pincode" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Pincode').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Contact Number</label>
+            <input type="text" placeholder="Contact Number" (keypress)="isNumber($event)" maxlength="10"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Contact_Number').hasError('required')}"
+                formControlName="Contact_Number" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Contact_Number').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Email Id</label>
+            <input type="text" placeholder="Email Id"
+                [ngClass]="{'hasError': isSubmitted && (frm.get('Email_Id').hasError('required')||frm.get('Email_Id').hasError('pattern'))}"
+                formControlName="Email_Id" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Email_Id').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+            <span *ngIf="isSubmitted && frm.get('Email_Id').hasError('pattern')" class="error"> Invalid
+                Email Id</span>
+        </div>
+
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Designation</label>
+            <input type="text" placeholder="Designation"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Designation').hasError('required')}"
+                formControlName="Designation" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Designation').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+
+        <!-- <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label for="customFilePicture">Picture</label>
+            <input type="file" id="customFilePicture" (change)="handleFileInput($event.target.files)"
+                placeholder="Picture"
+                [ngClass]="{'hasError': isSubmitted && frm.get('Picture').hasError('required')}"
+                formControlName="Picture" />
+       
+        </div> -->
+
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>DIN</label>
+            <div class="form-group form-control">
+                <div class=" custom-control custom-radio custom-control-inline">
+                    <input value="Yes" type="radio" id="Yes" formControlName="isDIN" name="isDIN"
+                        class="custom-control-input">
+                    <label class="custom-control-label" for="Yes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="No" value="No" formControlName="isDIN" name="isDIN"
+                        class="custom-control-input">
+                    <label class="custom-control-label" for="No">No </label>
+                </div>
+                <!-- <span *ngIf="isSubmitted && frm.get('Online_Seller').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+            </div>
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6" *ngIf="frm.get('isDIN').value==='Yes'">
+            <label>DIN Number </label>
+            <input type="text" placeholder="DIN Number"
+                [ngClass]="{'hasError': isSubmitted && frm.get('DIN_Number').hasError('required')}"
+                formControlName="DIN_Number" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Designation').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Gender Telephone No With Std Code</label>
+            <input type="text" [ngClass]="{
+            hasError: isSubmitted && frm.get('GenderTelephoneNoWithStdCode')
+          }" formControlName="GenderTelephoneNoWithStdCode" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Designation').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Fax Number With STD Code</label>
+            <input type="text" [ngClass]="{
+            hasError: isSubmitted && frm.get('FaxNumberWithSTDCode')
+          }" formControlName="FaxNumberWithSTDCode" />
+            <!-- <span *ngIf="isSubmitted && frm.get('Designation').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+        </div>
+
+        <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Authorized Signatory</label>
+            <div class="form-group form-control">
+                <div class=" custom-control custom-radio custom-control-inline">
+                    <input value="Yes" type="radio" id="Yes" formControlName="isAuthorizedSignatory"
+                        name="isAuthorizedSignatory" class="custom-control-input">
+                    <label class="custom-control-label" for="Yes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="No" value="No" formControlName="isAuthorizedSignatory"
+                        name="isAuthorizedSignatory" class="custom-control-input">
+                    <label class="custom-control-label" for="No">No </label>
+                </div>
+            </div>
+            <span *ngIf="isSubmitted && frm.get('isAuthorizedSignatory').hasError('required')" class="error">Please
+                Select Authorized Signatory</span>
+        </div>
+
+        <div class="col col-xs-12 col-sm-12 col-lg-12"
+            [ngClass]="{'hasError': isSubmitted && frm.get('Picture').hasError('required')}">
+            <app-file-upload [DocumentNameList]="DocumentNameList" uploadFileLableName="Picture"
+                [fileTypes]="PictureFileType" [fileDetails]="PictureFileDetails"
+                (sendFileDetails)="setPictureFileDetails($event)"
+                (sendRemoveFileDetails)="sendRemoveFileDetailsFn($event)">
+            </app-file-upload>
+            <!-- <span *ngIf="isSubmitted && frm.get('Picture').hasError('required')" class="error">Please
+            mention SellerName</span> -->
+        </div>
+    </div>
+
+</form>

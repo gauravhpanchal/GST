@@ -1,0 +1,136 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Order Details</h2>
+                <a routerLink="/order/all" class="btn">Back to List</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <table *ngIf="book">
+                <tbody>
+                    <tr>
+                        <th>Plan</th>
+                        <td>{{book.planTitle}}</td>
+                    </tr>
+                    <tr>
+                        <th>Request from</th>
+                        <td>{{book.webPg}}</td>
+                    </tr>
+                    <tr>
+                        <th>How you know about Travelvisaguru</th>
+                        <td>{{book.howFind}}</td>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <td>{{book.yrTitle}}</td>
+                    </tr>
+                    <tr>
+                        <th>First Name</th>
+                        <td>{{book.fstName}}</td>
+                    </tr>
+                    <tr>
+                        <th>Last Name</th>
+                        <td>{{book.lstName}}</td>
+                    </tr>
+                    <tr>
+                        <th>E-mail</th>
+                        <td>{{book.yrEmail}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Co Travel1 Title</th>
+                        <td>{{book.t1Title}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Co Travel1 First Name</th>
+                        <td>{{book.t1FirstName}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Co Travel1 Last Name</th>
+                        <td>{{book.t1LastName}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Co Travel1 Email</th>
+                        <td>{{book.t1Email}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Co Travel2 Title</th>
+                        <td>{{book.t2Title}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Co Travel2 First Name</th>
+                        <td>{{book.t2FirstName}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Co Travel2 Last Name</th>
+                        <td>{{book.t2LastName}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Co Travel2 Email</th>
+                        <td>{{book.t2Email}}</td>
+                    </tr>
+                    <tr *ngIf="book.childTravel">
+                        <th>Child Co Travel First Name</th>
+                        <td>{{book.chFirstName}}</td>
+                    </tr>
+                    <tr *ngIf="book.childTravel">
+                        <th>Child Co Travel Last Name</th>
+                        <td>{{book.chLastName}}</td>
+                    </tr>
+                    <tr>
+                        <th>Booking Details</th>
+                        <td>{{book.bookDetails}}</td>
+                    </tr>
+                    <tr>
+                        <th>Travel Details</th>
+                        <td>{{book.moreTravels}}</td>
+                    </tr>
+                    <tr>
+                        <th>Explain about your travel plans in detail here . We will use this information to prepare your documents. If you have some instructions for us</th>
+                        <td>{{book.travelDetail}}</td>
+                    </tr>
+                    <tr>
+                        <th>Payment Method</th>
+                        <td>{{book.payMethod}}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Amount</th>
+                        <td>{{book.payTotal}}</td>
+                    </tr>
+                    <tr *ngIf="book.coTravel">
+                        <th>Additional Charges</th>
+                        <td>USD{{book.additionPriceUSD}}/INR{{book.additionPriceINR}}</td>
+                    </tr>
+                    <tr *ngIf="book.payMethod === 'payu'">
+                        <th>Transaction Id</th>
+                        <td>{{book.txnid}}</td>
+                    </tr>
+                    <tr *ngIf="book.payMethod === 'paypal'">
+                        <th>Paypal Token</th>
+                        <td>{{book.payToken}}</td>
+                    </tr>
+                    <tr>
+                        <th>Payment Id</th>
+                        <td>{{book.payId}}</td>
+                    </tr>
+                    <tr>
+                        <th>Payment Status</th>
+                        <td>{{book.payStatus}}</td>
+                    </tr>
+                    <tr *ngIf="book.payDate != ''">
+                        <th>Transaction Date</th>
+                        <td>{{book.payDate | date: 'medium'}}</td>
+                    </tr>
+                    <tr>
+                        <th>Submit Date</th>
+                        <td>{{book.createdOn | date: 'medium'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

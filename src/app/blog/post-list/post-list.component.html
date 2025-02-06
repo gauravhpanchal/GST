@@ -1,0 +1,37 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Post List</h2>
+                <a routerLink="/post/add" class="btn">Add Blog</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <table *ngIf="postList">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Created On</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let post of postList; let i = index">
+                        <td>{{post.title}}</td>
+                        <td>{{post.category}}</td>
+                        <td>{{post.createdOn | date: 'MMM d, y'}}</td>
+                        <td>
+                            <a routerLink="/post/edit/{{post.postUrl}}">Edit</a>
+                            <a (click)="delPost(post.postUrl, i)">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

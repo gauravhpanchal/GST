@@ -1,0 +1,75 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Leads </h2>
+                <!-- <a routerLink="/category/add" class="btn">Add Category</a> -->
+            </div>
+            <tabset #tabset>
+                <tab [heading]="tabs[0].name" (selectTab)="onTabChange(tabs[0].id)">
+                    <app-leads-for-state-section [tabID]="tabs[0].id" (sendData)="setTabData($event)"
+                        [selectedTab]="selectedTab" (tabChange)="tabChange($event)" [selectedTabID]="selectedTabID"
+                        [ID]="ID">
+                    </app-leads-for-state-section>
+                </tab>
+                <tab [heading]="tabs[1].name" (selectTab)="onTabChange(tabs[1].id)">
+                    <app-organisation-info [tabID]="tabs[1].id" (sendData)="setTabData($event)"
+                        [selectedTab]="selectedTab" (tabChange)="tabChange($event)" [selectedTabID]="selectedTabID"
+                        [ID]="ID">
+                    </app-organisation-info>
+                </tab>
+                <tab [heading]="tabs[2].name" (selectTab)="onTabChange(tabs[2].id)">
+                    <app-individual-info [tabID]="tabs[2].id" (sendData)="setTabData($event)"
+                        [selectedTab]="selectedTab" (tabChange)="tabChange($event)" [selectedTabID]="selectedTabID"
+                        [ID]="ID" (addNewIndividual)="addNewIndividual($event)">
+                    </app-individual-info>
+                </tab>
+
+                <!-- <tab *ngFor="let newTab of NewIndividualList" [heading]="newTab.name"
+                    (selectTab)="onTabChange(newTab.id)">
+                    <app-individual-info [tabID]="newTab.id" (sendData)="setTabData($event)" (tabChange)="tabChange($event)"  [selectedTab]="selectedTab"
+                        [selectedTabID]="selectedTabID" [ID]="ID">
+                    </app-individual-info>
+                </tab> -->
+
+                <tab [heading]="tabs[3].name" (selectTab)="onTabChange(tabs[3].id)">
+                    <app-bank-details [tabID]="tabs[3].id" (sendData)="setTabData($event)" [selectedTab]="selectedTab"
+                        (tabChange)="tabChange($event)" [selectedTabID]="selectedTabID" [ID]="ID">
+                    </app-bank-details>
+                </tab>
+
+                <tab [heading]="tabs[4].name" (selectTab)="onTabChange(tabs[4].id)">
+                    <app-ppob [tabID]="tabs[4].id" (sendData)="setTabData($event)" (tabChange)="tabChange($event)"
+                        [selectedTab]="selectedTab" [selectedTabID]="selectedTabID" [ID]="ID">
+                    </app-ppob>
+                </tab>
+
+                <tab [heading]="tabs[5].name" (selectTab)="onTabChange(tabs[5].id)">
+                    <app-apob [tabID]="tabs[5].id" (sendData)="setTabData($event)" (tabChange)="tabChange($event)"
+                        [selectedTab]="selectedTab" [selectedTabID]="selectedTabID" [ID]="ID">
+                    </app-apob>
+                </tab>
+                <tab [heading]="tabs[6].name" (selectTab)="onTabChange(tabs[6].id)">
+                    <app-complaince-check [tabID]="tabs[6].id" (sendData)="setTabData($event)"
+                        [selectedTab]="selectedTab" (tabChange)="tabChange($event)" [selectedTabID]="selectedTabID"
+                        [ID]="ID">
+                    </app-complaince-check>
+                </tab>
+                <tab [heading]="tabs[7].name" (selectTab)="onTabChange(tabs[7].id)">
+                  <app-create-gstapp [tabID]="tabs[7].id" (sendData)="setTabData($event)" [selectedTab]="selectedTab"
+                  (tabChange)="tabChange($event)" [selectedTabID]="selectedTabID" [ID]="ID">
+                </app-create-gstapp>
+              </tab>
+              <tab [heading]="tabs[8].name" (selectTab)="onTabChange(tabs[8].id)" *ngIf="showInvoice">
+                  <app-invoice [tabID]="tabs[8].id" (sendData)="setTabData($event)" (tabChange)="tabChange($event)"
+                      [selectedTab]="selectedTab" [selectedTabID]="selectedTabID" [ID]="ID">
+                  </app-invoice>
+              </tab>
+            </tabset>
+        </div>
+
+    </section>
+</section>
+<app-footer></app-footer>

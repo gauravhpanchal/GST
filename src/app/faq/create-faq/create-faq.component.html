@@ -1,0 +1,29 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Add a Question</h2>
+                <a routerLink="/faq/all" class="btn">&larr; Back to List</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <form [formGroup]="faqFrm" (submit)="newFaq()">
+                <h4>Question</h4>
+                <input type="text" placeholder="Question" formControlName="question" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="faqSubmit && fFrm.question.errors">
+                    <div *ngIf="fFrm.question.errors.required">Please enter question</div>
+                </div>
+                <h4>Answer</h4>
+                <textarea placeholder="Answer" formControlName="answer"></textarea>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="faqSubmit && fFrm.answer.errors">
+                    <div *ngIf="fFrm.answer.errors.required">Please enter answer</div>
+                </div>
+                <button type="submit" [disabled]="faqBtm">Done</button>
+            </form>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

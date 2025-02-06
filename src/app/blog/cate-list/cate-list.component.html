@@ -1,0 +1,34 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Category List</h2>
+                <a routerLink="/category/add" class="btn">Add Category</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <table *ngIf="cateList">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Created On</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let cate of cateList; let i = index">
+                        <td>{{cate.title}}</td>
+                        <td>{{cate.createdOn | date: 'MMM d, y'}}</td>
+                        <td>
+                            <a (click)="delCate(cate.cateUrl, i)">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

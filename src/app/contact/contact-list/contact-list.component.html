@@ -1,0 +1,36 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Contact List</h2>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <table *ngIf="contactList">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>E-mail</th>
+                        <th>Phone</th>
+                        <th>Message</th>
+                        <th>Send On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let cInfo of contactList">
+                        <td class="text-left">{{cInfo.usrName}}</td>
+                        <td>{{cInfo.usrEmail}}</td>
+                        <td>{{cInfo.usrPhone}}</td>
+                        <td>{{cInfo.usrMsg}}</td>
+                        <td *ngIf="cInfo.createdOn._seconds == undefined">{{ cInfo.createdOn | date: 'medium'}}</td>
+                        <td *ngIf="cInfo.createdOn._seconds != undefined"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

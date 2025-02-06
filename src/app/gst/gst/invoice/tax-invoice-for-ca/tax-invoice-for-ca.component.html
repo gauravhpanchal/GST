@@ -1,0 +1,41 @@
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display': isShow ? 'block':'none'}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tax Invoice For CA </h5>
+                <button type="button" (click)="closeModel()" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sr. No.</th>
+                                <th scope="col">Lead No</th>
+                                <th scope="col" colspan="4">Seller Name</th>
+                                <th scope="col">Agmt Dt.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of taxInvoiceData; let i=index">
+                                <th scope="row">{{i+1}}</th>
+                                <td>{{data.leadNo}}</td>
+                                <td colspan="4">{{data.sellerName}}</td>
+                                <td>{{data.agmtDt}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button (click)="closeModel()" type="button" class="btn btn-secondary"
+                    data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

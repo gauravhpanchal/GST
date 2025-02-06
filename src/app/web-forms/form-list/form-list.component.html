@@ -1,0 +1,42 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Forms for Other sites</h2>
+                <a routerLink="/forms/add" class="btn">Add Form</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <table *ngIf="fList">
+                <thead>
+                    <tr>
+                        <th>Website</th>
+                        <th>Login Id</th>
+                        <th>Email</th>
+                        <th>Code</th>
+                        <th>Created On</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let frm of fList; let i = index">
+                        <td>{{frm.website}}</td>
+                        <td>{{frm.userName}}</td>
+                        <td>{{frm.email}}</td>
+                        <td>
+                            <textarea><iframe src="https://travelvisaguru.com/web-booking/{{frm.userName}}" frameborder="0" width="100%" height="650"></iframe></textarea>
+                        </td>
+                        <td>{{frm.createdOn | date: 'MMM d, y'}}</td>
+                        <td>
+                            <a (click)="delFrm(frm.userName, i)">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

@@ -1,0 +1,40 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Upload Image</h2>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <ul id="dataList">
+                <li>
+                    <span class="imgSec" [ngClass]="{'upIco': upIco}" [style.background-image] = "'url('+defaultImg+')'">
+                        <label for="imgUp"></label>
+                    </span>
+                    <article>
+                        <h3>Upload image in jpeg/jpg/png/gif format!</h3>
+                        <p>must be under 4mb</p>
+                        <input type="file" [(ngModel)]="imgUp" id="imgUp" accept="image/*" (change)="selectFile($event)" />
+                        <div class="clear"></div>
+                        <div class="progBar" *ngIf="uploading">
+                            <span [style.width]="percent+'%'"></span>
+                        </div>
+                        <button type="submit" *ngIf="!uploading" (click)="uploadNow()">Upload</button>
+                    </article>
+                </li>
+                <li *ngFor="let img of imgList; let i = index">
+                    <span class="imgSec" [style.background-image] = "'url(https://admin.travelvisaguru.com/uploads/'+img.imgUrl+')'"></span>
+                    <article>
+                        <h3>Image URL</h3>
+                        <p>You can copy image URL to use in your post</p>
+                        <input type="text" value="https://admin.travelvisaguru.com/uploads/{{img.imgUrl}}" />
+                    </article>
+                </li>
+            </ul>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

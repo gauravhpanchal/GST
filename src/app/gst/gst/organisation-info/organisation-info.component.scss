@@ -1,0 +1,72 @@
+@import url('../_gst.scss');
+
+.AddNewGST{
+    height: 2rem;
+    border: none;
+    border-radius: 3px;
+    background-color: #ff5834;
+    color: #ffffff;
+    transition: 0.2s all linear;
+    border: 2px solid #fff;
+}
+
+.AddNewGST :focus{
+    border: 2px solid #fff !important;
+}
+
+.table {
+    width: 100%;
+    margin: 0 15px !important;
+}
+
+.editButton {
+    border: none;
+    border-radius: 3px;
+    background-color: #ff5834;
+    color: #ffffff;
+    padding: 5px 30px;
+    margin-top: 10px;
+    transition: 0.2s all linear;
+}
+
+.add{
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+}
+
+.input-group-text{
+    border: none;
+    border-radius: 3px;
+    background-color: #ff5834;
+    color: #ffffff;
+    padding: 5px 30px;
+    margin-top: 10px;
+    transition: 0.2s all linear;
+}
+
+.tag{
+    border: 1px solid #ff5834;
+    background: #ff5834;
+    color: #fff;
+    padding: 2px;
+    font-weight: bold;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: auto;
+    /* display: flex; */
+    border-radius: 5px;
+}
+
+.close{
+    padding: 2px;
+    /* font-weight: 100; */
+    /* border: 2px solid black; */
+    border-radius: 19px;
+    color: black;
+}
+
+.tagClose{
+    color: black;
+    cursor: pointer;
+}

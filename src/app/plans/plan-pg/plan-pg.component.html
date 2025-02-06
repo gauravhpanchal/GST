@@ -1,0 +1,37 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>All Plans</h2>
+                <a routerLink="/plan/add" class="btn">Add New Plan</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <table *ngIf="planList">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Price in USD</th>
+                        <th>Price in INR</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let plan of planList; let i = index">
+                        <td>{{plan.title}}</td>
+                        <td>${{plan.amount}}</td>
+                        <td>&#8377;{{plan.amountINR}}</td>
+                        <td>
+                            <a routerLink="/plan/edit/{{plan.url}}">Edit</a>
+                            <a (click)="delPlan(plan.url, i)">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

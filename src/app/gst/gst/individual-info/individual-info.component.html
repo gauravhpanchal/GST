@@ -1,0 +1,82 @@
+<div class="cotainer">
+  <!-- <div class="row" *ngIf="frm.dirty">
+        <div class="col-12 alert alert-danger" role="alert" style="text-align:center;color: #ff5834;margin: 5px;">
+            Click save button to save current changes.
+        </div>
+    </div> -->
+  <!-- <div class="row" *ngIf="selectedTabID==='Individual'">
+        <div class="col-12 " style="text-align: end;padding-top: 10px;">
+            <button class="AddNewIndividual" (click)="AddNewIndividualClick()" type="button">Add New Individual</button>
+        </div>
+    </div> -->
+
+  <div class="col col-12" *ngFor="let frm of individualData; let index = index">
+    <fieldset>
+      <legend>
+        <div
+          class="row"
+          style="display: inline-flex; width: 100%; height: 10px"
+        >
+          <div class="col col-6">Individual Info</div>
+          <div class="col col-6" style="text-align: end">
+            <img
+              *ngIf="index == 0"
+              (click)="onAddClick()"
+              title="Add"
+              src="/assets/icons/add.svg"
+              class="iconimg"
+            />
+            <img
+              *ngIf="index != individualData.length - 1"
+              (click)="onDeleteClick(index)"
+              title="Delete"
+              src="/assets/icons/delete.svg"
+              class="iconimg"
+            />
+            <img
+              style="margin-left: 10px"
+              [title]="frm.isExpend ? 'Collapse' : 'Expend'"
+              (click)="frm.isExpend = !frm.isExpend"
+              [src]="getShowHideImg(frm)"
+              class="iconimg"
+            />
+          </div>
+        </div>
+      </legend>
+      <div
+        class="row col col-12"
+        [ngStyle]="{ display: frm.isExpend ? 'block' : 'none' }"
+      >
+        <app-individual-info-item
+          [isSubmitted]="isSubmitted"
+          [IndividualInfoDataIndex]="index"
+          [ID]="ID"
+          [tabID]="tabID"
+          [selectedTabID]="selectedTabID"
+          [IndividualInfoData]="frm"
+          (sendDataIndividual)="sendDataIndividualFn($event)"
+        >
+        </app-individual-info-item>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <button type="button" (click)="onSave()">
+        Save
+      </button>
+      <button style="float: right" type="button" (click)="onTabChange('next')">
+        Next
+      </button>
+      <button
+        style="float: right"
+        [disabled]="selectedTab == 0"
+        type="button"
+        (click)="onTabChange('previous')"
+      >
+        Previous
+      </button>
+    </div>
+  </div>
+</div>

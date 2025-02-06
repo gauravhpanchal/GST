@@ -1,0 +1,96 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Update Post</h2>
+                <a routerLink="/post/all" class="btn">&larr; Back to List</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <form [formGroup]="postFrm" (submit)="updatePost()">
+                <h4>Title</h4>
+                <input type="text" placeholder="Blog Title" formControlName="title" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.title.errors">
+                    <div *ngIf="pstFrm.title.errors.required">Please mention blog title</div>
+                </div>
+                <h4>Category</h4>
+                <select formControlName="category">
+                    <option *ngFor="let cate of cateList" value="{{cate.title}}">{{cate.title}}</option>
+                </select>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.category.errors">
+                    <div *ngIf="pstFrm.category.errors.required">Please select blog category</div>
+                </div>
+                <h4>Information</h4>
+                <div class="textEditor">
+                    <textarea #editable formControlName="details"></textarea>
+                </div>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.details.errors">
+                    <div *ngIf="pstFrm.details.errors.required">Please mention blog details</div>
+                </div>
+                <h4>Visa types & Fee</h4>
+                <div class="textEditor">
+                    <textarea #tourEditable formControlName="tourPlan"></textarea>
+                </div>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.tourPlan.errors">
+                    <div *ngIf="pstFrm.tourPlan.errors.required">Please mention tour plan</div>
+                </div>
+                <h4>Visa templates</h4>
+                <div class="textEditor">
+                    <textarea #locEditable formControlName="locArea"></textarea>
+                </div>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.locArea.errors">
+                    <div *ngIf="pstFrm.locArea.errors.required">Please mention location details</div>
+                </div>
+                <h4>Location</h4>
+                <div class="textEditor">
+                    <textarea #glyEditable formControlName="gallery"></textarea>
+                </div>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.gallery.errors">
+                    <div *ngIf="pstFrm.gallery.errors.required">Please mention image gallery</div>
+                </div>
+                <h4>Travel itinerary</h4>
+                <div class="textEditor">
+                    <textarea #rvwEditable formControlName="review"></textarea>
+                </div>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.review.errors">
+                    <div *ngIf="pstFrm.review.errors.required">Please mention review details</div>
+                </div>
+                <h4>FAQ</h4>
+                <div class="textEditor">
+                    <textarea #faqEditable formControlName="faq"></textarea>
+                </div>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.faq.errors">
+                    <div *ngIf="pstFrm.faq.errors.required">Please mention FAQ details</div>
+                </div>
+                <h4>Thumbnail Image</h4>
+                <input type="text" placeholder="Image Url" formControlName="imgUrl" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.imgUrl.errors">
+                    <div *ngIf="pstFrm.imgUrl.errors.required">Please mention thumbnail image url</div>
+                </div>
+                <h4>Search Details</h4>
+                <textarea placeholder="Short description (within 250 characters)" formControlName="schDes" maxlength="250"></textarea>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.schDes.errors">
+                    <div *ngIf="pstFrm.schDes.errors.required">Please mention search details</div>
+                </div>
+                <h4>Search Keywords</h4>
+                <textarea placeholder="Keywords separated by comma (within 250 characters)" formControlName="schKey" maxlength="250"></textarea>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.schKey.errors">
+                    <div *ngIf="pstFrm.schKey.errors.required">Please mention search keywords</div>
+                </div>
+                <h4>Status</h4>
+                <select formControlName="status">
+                    <option value="true">Publish</option>
+                    <option value="false">Save to Draft</option>
+                </select>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="postSubmit && pstFrm.status.errors">
+                    <div *ngIf="pstFrm.status.errors.required">Please mention status</div>
+                </div>
+                <button type="submit" [disabled]="postBtm">Done</button>
+            </form>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

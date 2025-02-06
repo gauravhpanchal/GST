@@ -1,0 +1,19 @@
+header {
+    border-bottom: #fff solid thin;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: 50;
+    background-color: #ffffff;
+    -webkit-box-shadow: 0 1px 5px 0 #A1A1A1;
+    box-shadow: 0 1px 5px 0 #A1A1A1;
+}
+
+h1 {
+    font-size: 26px;
+    color: #ff5834;
+    padding: 8px 0;
+    margin: 0;
+    width: 200px;
+}

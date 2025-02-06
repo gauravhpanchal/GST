@@ -1,0 +1,336 @@
+<div class="cotainer">
+  <div class="row" *ngIf="frm.dirty">
+    <div class="col-12 alert alert-danger" role="alert" style="text-align: center; color: #ff5834; margin: 5px">
+      Click save button to save current changes.
+    </div>
+  </div>
+  <form [formGroup]="frm" (submit)="onSubmit()">
+    <div class="row">
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Business Legal Name</label>
+        <input type="text" placeholder="Business Legal Name" readonly [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('Business_Legal_Name').hasError('required')
+          }" formControlName="Business_Legal_Name" />
+        <!-- <span *ngIf="isSubmitted && frm.get('Business_Legal_Name').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Business Constitution</label>
+        <select placeholder="Business Constitution" [ngClass]="{
+            hasError:
+              isSubmitted &&
+              frm.get('Business_Constitution').hasError('required')
+          }" formControlName="Business_Constitution">
+          <option value="-1">Select</option>
+          <option [value]="doc" *ngFor="let doc of BusinessConstitutionList">
+            {{ doc }}
+          </option>
+        </select>
+        <!-- <span *ngIf="isSubmitted && frm.get('Business_Constitution').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Business Trade Name</label>
+        <input type="text" placeholder="Business Trade Name" readonly [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('Business_Trade_Name').hasError('required')
+          }" formControlName="Business_Trade_Name" />
+        <!-- <span *ngIf="isSubmitted && frm.get('Business_Trade_Name').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Business Pan Number</label>
+        <input type="text" placeholder="Business Pan Number" readonly [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('Business_Pan_Number').hasError('required')
+          }" formControlName="Business_Pan_Number" />
+        <!-- <span *ngIf="isSubmitted && frm.get('Business_Pan_Number').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+
+      <div class="col col-12">
+        <fieldset>
+          <legend>
+            <div style="display: inline-flex; width: 100%; height: 10px">
+              <div style="width: 50%">GST Details</div>
+              <div style="width: 50%; text-align: end">
+                <!-- <button type="button" (click)="onAddNewGSTClick(template)" class="AddNewGST">Add
+                                    GST</button> -->
+                <img title="Add GST" class="add" (click)="onAddNewGSTClick(template)" src="/assets/icons/add.svg" />
+              </div>
+            </div>
+          </legend>
+          <div class="row">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">GST Number</th>
+                  <th scope="col">GST State</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let GST of GST_Details; let i = index;">
+                  <td scope="row">{{ i + 1 }}</td>
+                  <td>{{ GST.GST_Number }}</td>
+                  <td>{{ GST.GST_State }}</td>
+                  <td>{{ GST.GST_Date | date : "dd/MM/yyyy" }}</td>
+                  <td>{{ GST.GST_Status }}</td>
+                  <td>
+                    <button type="button" (click)="onEditClick(template, GST)" class="editButton" *ngIf="GST.ID">
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="GST_Details || GST_Details.length === 0">
+                  <td scope="row" colspan="6">Data Not Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Certificate of Incorporation</label>
+        <input type="text" placeholder="Certificate of Incorporation" [ngClass]="{
+            hasError:
+              isSubmitted &&
+              frm.get('Certificate_Of_Incorporation').hasError('required')
+          }" formControlName="Certificate_Of_Incorporation" />
+        <!-- <span *ngIf="isSubmitted && frm.get('Certificate_Of_Incorporation').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>COI Date</label>
+        <input type="text" placeholder="COI Date" type="date" [ngClass]="{
+            hasError: isSubmitted && frm.get('COI_DATE').hasError('required')
+          }" formControlName="COI_DATE" />
+        <!-- <span *ngIf="isSubmitted && frm.get('COI_DATE').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Email Id</label>
+        <input type="text" placeholder="Email Id" readonly [ngClass]="{
+            hasError:
+              isSubmitted &&
+              (frm.get('Email').hasError('required') ||
+                frm.get('Email').hasError('pattern'))
+          }" formControlName="Email" />
+        <!-- <span *ngIf="isSubmitted && frm.get('Email').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+        <span *ngIf="isSubmitted && frm.get('Email').hasError('pattern')" class="error">
+          Invalid Email Id</span>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Contact Person</label>
+        <input type="text" placeholder="Contact Person" readonly [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('Contact_person').hasError('required')
+          }" formControlName="Contact_person" />
+        <!-- <span *ngIf="isSubmitted && frm.get('Contact_person').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Contact Number</label>
+        <input type="text" readonly placeholder="Contact Number" (keypress)="isNumber($event)" maxlength="10" [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('Contact_Number').hasError('required')
+          }" formControlName="Contact_Number" />
+        <!-- <span *ngIf="isSubmitted && frm.get('Contact_Number').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+
+      <div class="col col-12">
+        <fieldset>
+          <legend>
+            <div style="display: inline-flex; width: 100%; height: 10px">
+              <div>Product HSN</div>
+            </div>
+          </legend>
+          <div class="row">
+            <div class="col col-12">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Product HSN" formControlName="Product_HSN_number"
+                  (keypress)="isNumber($event)" maxlength="10" />
+                <div class="input-group-append">
+                  <span class="input-group-text" (click)="onProductHSNTagNumbersClick()">Add</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col col-12">
+              <div style="margin-bottom: 10px">
+                <span *ngFor="let tab of ProductHSNTagNumbers; let i = index" class="tag">{{ tab }}
+                  <em (click)="RemoveProductHSNTag(i)" title="Remove" class="tagClose">x</em>
+                </span>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col col-12">
+        <fieldset>
+          <legend>
+            <div style="display: inline-flex; width: 100%; height: 10px">
+              <div>Service HSN</div>
+            </div>
+          </legend>
+          <div class="row">
+            <div class="col col-12">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Service HSN" formControlName="Service_HSN_number"
+                  (keypress)="isNumber($event)" maxlength="10" />
+                <div class="input-group-append">
+                  <span class="input-group-text" (click)="onServiceHSNTagNumbersClick()">Add</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col col-12">
+              <div style="margin-bottom: 10px">
+                <span *ngFor="let tab of ServiceHSNTagNumbers; let i = index" class="tag">{{ tab }}
+                  <em (click)="RemoveServiceHSNTag(i)" title="Remove" class="tagClose">x</em>
+                </span>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Online Seller</label>
+        <div class="form-group form-control">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input formControlName="Online_Seller" value="Yes" type="radio" id="Yes" name="Online_Seller"
+              class="custom-control-input" />
+            <label class="custom-control-label" for="Yes">Yes</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input formControlName="Online_Seller" value="No" type="radio" id="No" name="Online_Seller"
+              class="custom-control-input" />
+            <label class="custom-control-label" for="No">No </label>
+          </div>
+          <!-- <span *ngIf="isSubmitted && frm.get('Online_Seller').hasError('required')" class="error">Please
+                        mention SellerName</span> -->
+        </div>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>PT Details</label>
+        <input type="text" placeholder="PT Details" [ngClass]="{
+            hasError: isSubmitted && frm.get('PT_Details').hasError('required')
+          }" formControlName="PT_Details" />
+        <!-- <span *ngIf="isSubmitted && frm.get('PT_Details').hasError('required')" class="error">Please
+                    mention PT Details</span> -->
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>PTREC Details</label>
+        <input type="text" placeholder="PTREC Details" [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('PTREC_Details').hasError('required')
+          }" formControlName="PTREC_Details" />
+        <!-- <span *ngIf="isSubmitted && frm.get('PTREC_Details').hasError('required')" class="error">Please
+                    mention PTREC Details</span> -->
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Composite Seller</label>
+        <div class="form-group form-control">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input formControlName="Composite_Seller" value="Yes" type="radio" id="YesComposite_Seller"
+              name="Composite_Seller" class="custom-control-input" />
+            <label class="custom-control-label" for="YesComposite_Seller">Yes</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input formControlName="Composite_Seller" value="No" type="radio" id="NoComposite_Seller"
+              name="Composite_Seller" class="custom-control-input" />
+            <label class="custom-control-label" for="NoComposite_Seller">No
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-xs-12 col-sm-12 col-lg-12" [ngClass]="{
+          hasError: isSubmitted && frm.get('Attachments').hasError('required')
+        }">
+        <app-file-upload [DocumentNameList]="DocumentNameList" uploadFileLableName="Attachments"
+          [fileTypes]="AttachmentsFileType" [fileDetails]="AttachmentsFileDetails"
+          (sendFileDetails)="setAttachmentsFileDetails($event)"
+          (sendRemoveFileDetails)="sendRemoveFileDetailsFn($event)">
+        </app-file-upload>
+        <!-- <span *ngIf="isSubmitted && frm.get('Attachments').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <button type="submit">Save</button>
+        <button style="float: right" type="button" (click)="onTabChange('next')">
+          Next
+        </button>
+        <button style="float: right" [disabled]="selectedTab == 0" type="button" (click)="onTabChange('previous')">
+          Previous
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">
+      {{ SelectedGST_ID == "-1" ? "Add" : "Edit" }} GST Details
+    </h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col col-12">
+        <label>GST Number</label>
+        <input type="text" placeholder="GST Number" [(ngModel)]="SelectedGST_Number" />
+      </div>
+
+      <div class="col col-12">
+        <label>GST State</label>
+        <select placeholder="GTS State" [(ngModel)]="SelectedGST_State">
+          <option value="-1">Select</option>
+          <option [value]="State" *ngFor="let State of StatesList">
+            {{ State }}
+          </option>
+        </select>
+        <!-- <span *ngIf="isSubmitted && frm.get('GST_State').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+      </div>
+
+      <div class="col col-12">
+        <label>Date</label>
+        <input type="date" placeholder="Date" [(ngModel)]="SelectedGST_Date" />
+      </div>
+
+      <div class="col col-12">
+        <label>Status</label>
+        <input type="text" placeholder="Status" [(ngModel)]="SelectedGST_Status" />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="SelectedGST_State == '-1' || !SelectedGST_Number" type="button" class="editButton"
+      (click)="addState()">
+      {{ SelectedGST_ID == "-1" ? "Save" : "Update" }}
+    </button>
+  </div>
+</ng-template>

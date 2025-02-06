@@ -1,0 +1,24 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Add a Category</h2>
+                <a routerLink="/category/all" class="btn">&larr; Back to List</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <form [formGroup]="cateFrm" (submit)="newCate()">
+                <h4>Title</h4>
+                <input type="text" placeholder="Category Title" formControlName="title" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="cateSubmit && ctFrm.title.errors">
+                    <div *ngIf="ctFrm.title.errors.required">Please mention category title</div>
+                </div>
+                 <button type="submit" [disabled]="cateBtm">Done</button>
+            </form>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

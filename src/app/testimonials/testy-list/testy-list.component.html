@@ -1,0 +1,36 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>All Testimonials</h2>
+                <a routerLink="/testimonials/add" class="btn">Add Testimonial</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <table *ngIf="testyList">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Details</th>
+                        <th>Created On</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let testy of testyList; let i = index">
+                        <td>{{testy.user}}</td>
+                        <td class="text-left">{{testy.details}}</td>
+                        <td>{{testy.createdOn | date: 'MMM d, y'}}</td>
+                        <td>
+                            <a (click)="delTesty(testy.id, i)">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

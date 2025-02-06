@@ -1,0 +1,1253 @@
+<div class="cotainer">
+  <div class="row" *ngIf="frm.dirty">
+    <div class="col-12 alert alert-danger" role="alert" style="text-align: center; color: #ff5834; margin: 5px">
+      Click save button to save current changes.
+    </div>
+  </div>
+  <form [formGroup]="frm" (submit)="onSubmit()">
+    <div class="row">
+      <fieldset formGroupName="Temp_Reg">
+        <legend>New Registration of Temporary Registration Application</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State</label>
+            <select formControlName="State" readonly>
+              <option value="-1">Select</option>
+              <option *ngFor="let State of StatesList">
+                {{ State }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>District</label>
+            <input type="text" formControlName="District" readonly />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Legal Name of the Business (As mentioned in PAN)</label>
+            <input type="text" formControlName="Business_Legal_Name" readonly />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>PAN No</label>
+            <input type="text" readonly formControlName="PAN_No" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Email Address</label>
+            <input type="text" formControlName="Email_Id" readonly />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Mobile Number</label>
+            <input type="text" formControlName="Mobile_Number" readonly />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>PPOB Application</legend>
+        <div class="row" formGroupName="PPOB">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Door No/Premises No </label>
+            <input type="text" readonly formControlName="DoorNoPremisesNo" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Floor No </label>
+            <input type="text" readonly formControlName="FloorNo" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Building Premise Name </label>
+            <input type="text" readonly formControlName="BuildingPremiseName" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Area Street Road Name </label>
+            <input type="text" readonly formControlName="AreaStreetRoadName" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Sub Locality </label>
+            <input type="text" readonly formControlName="SubLocalityLocality" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>City </label>
+            <input type="text" readonly formControlName="City" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Pincode </label>
+            <input type="text" readonly formControlName="Pincode" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State </label>
+            <input type="text" readonly formControlName="State" />
+          </div>
+        </div>
+        <fieldset formGroupName="Business_Details">
+          <legend>Business Details</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Trade Name, if any</label>
+              <input type="text" formControlName="Trade_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Constitution of Business (Please Select the Appropriate)</label>
+              <input type="text" readonly formControlName="Business_Constitution" />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>State</label>
+              <select formControlName="State" readonly>
+                <option value="-1">Select</option>
+                <option *ngFor="let State of StatesList">
+                  {{ State }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Jurisdiction</label>
+              <input type="text" formControlName="Jurisdiction" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>WARD/ CIRCLE / SECTOR NO</label>
+              <input type="text" formControlName="Ward_No" />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Commisionerate Code</label>
+              <input type="text" formControlName="Commisionerate_Code" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Division Code</label>
+              <input type="text" formControlName="Division_Code" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Range Code</label>
+              <input type="text" formControlName="Range_Code" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Option for Composition</label>
+              <div class="form-group form-control">
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input value="Yes" type="radio" id="Composition_OptionYes" name="Composition_Option"
+                    class="custom-control-input" formControlName="Composition_Option" />
+                  <label class="custom-control-label" for="Composition_OptionYes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="Composition_OptionNo" value="No" name="Composition_Option"
+                    class="custom-control-input" formControlName="Composition_Option" />
+                  <label class="custom-control-label" for="Composition_OptionNo">No
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Date of commencement of business</label>
+              <input type="text" formControlName="Commencement_Date" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Date on which liability to register arises</label>
+              <input type="text" formControlName="Register_Arises_Date" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Are you applying for registration as a casual taxable
+                person?</label>
+              <div class="form-group form-control">
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input value="Yes" type="radio" id="Casual_Tax_OptionYes" name="Casual_Tax_Option"
+                    class="custom-control-input" formControlName="Casual_Tax_Option" />
+                  <label class="custom-control-label" for="Casual_Tax_OptionYes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="No" value="Casual_Tax_OptionNo" name="Casual_Tax_Option"
+                    class="custom-control-input" formControlName="Casual_Tax_Option" />
+                  <label class="custom-control-label" for="Casual_Tax_OptionNo">No
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Reason to obtain registration</label>
+              <select formControlName="Reason_Reg">
+                <option value="-1">Select</option>
+                <option *ngFor="let item of ReasonRegList">
+                  {{ item }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Registration Type</label>
+              <select formControlName="Registration_Type">
+                <option value="-1">Select</option>
+                <option *ngFor="let item of RegistrationTypeList">
+                  {{ item }}
+                </option>
+              </select>
+            </div>
+            <div *ngFor="let RegType of GstFromOrgInfo" class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Registration Number</label>
+              <input type="text" readonly formControlName="Registration_Number" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Date of Registration</label>
+              <input type="date" formControlName="Registration_Date" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Date</label>
+              <input type="text" formControlName="License_Date" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>License Number</label>
+              <input type="text" formControlName="License_Number" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Certificate of Incorporation Number</label>
+              <input type="text" readonly formControlName="Incorporation_Number" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Certificate of Incorporation Number Date</label>
+              <input type="date" readonly formControlName="Incorporation_Number_Date" />
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>
+            <div style="display: inline-flex; justify-content: space-between; width: 100%; height: 10px">
+              <div style="width: 50%">GST Details</div>
+              <div style="width: 25px;">
+                <!-- <button type="button" (click)="onAddNewGSTClick(template)" class="AddNewGST">Add
+                                    GST</button> -->
+                <img title="Add GST" class="add" (click)="onAddNewGSTClick(template)" src="/assets/icons/add.svg" />
+              </div>
+            </div>
+          </legend>
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">GST Number</th>
+                  <th scope="col">GST State</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let GST of GST_Details; let i = index;">
+                  <td scope="row">{{ i + 1 }}</td>
+                  <td>{{ GST.GST_Number }}</td>
+                  <td>{{ GST.GST_State }}</td>
+                  <td>{{ GST.GST_Date | date : "dd/MM/yyyy" }}</td>
+                  <td>{{ GST.GST_Status }}</td>
+                  <td>
+                    <button type="button" (click)="onEditClick(template, GST)" class="editButton" *ngIf="GST.id">
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="GST_Details.length === 0">
+                  <td scope="row" colspan="6">Data Not Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </fieldset>
+      </fieldset>
+      <!-- PROMOTERS/PARTNER -->
+      <fieldset *ngFor="let person of IndividualInfoData; let i = index">
+        <fieldset formGroupName="Personal_Information">
+          <legend>Personal Information {{ i + 1 }}</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>First Name</label>
+              <input readonly type="text" [value]="person.First_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Middle Name</label>
+              <input type="text" [value]="person.Middle_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Last Name</label>
+              <input type="text" [value]="person.Last_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Father First Name</label>
+              <input type="text" [value]="person.Father_First_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Father Middle Name</label>
+              <input type="text" [value]="person.Father_Middle_Name" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Father Last Name</label>
+              <input type="text" [value]="person.Father_Last_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>DOB</label>
+              <input type="text" type="date" [value]="person.DOB" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Mobile Number</label>
+              <input type="text" [value]="person.Contact_Number" maxlength="10" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Email Id</label>
+              <input type="text" [value]="person.Email_Id" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Gender</label>
+              <select readonly>
+                <option value="-1">Select</option>
+                <option [value]="Gender" *ngFor="let Gender of GenderList">
+                  {{ Gender }}
+                </option>
+              </select>
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Telephone No</label>
+              <input type="text" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>FAX Number</label>
+              <input type="text" readonly />
+            </div>
+          </div>
+        </fieldset>
+        <fieldset formGroupName="Identity_Information">
+          <legend>Identity Information {{ i + 1 }}</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Designation / Status</label>
+              <input type="text" [value]="person.Designation" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Director Identifciation Number</label>
+              <input type="text" [value]="person.DIN_Number" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Are you a citizen of India</label>
+              <div class="form-group form-control" readonly>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input [checked]="true" value="Yes" type="radio" id="Yes" name="isIndianCitizen"
+                    class="custom-control-input" readonly />
+                  <label class="custom-control-label" for="Yes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="No" value="No" name="isIndianCitizen" class="custom-control-input" readonly />
+                  <label class="custom-control-label" for="No">No </label>
+                </div>
+              </div>
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Permanent Account Number (PAN)</label>
+              <input type="text" [value]="person.PAN_Number" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Passport Number</label>
+              <input type="text" [value]="person.PassportNo" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Aadhar Number</label>
+              <input type="text" [value]="person.Aadhaar_Number" readonly />
+            </div>
+          </div>
+          <legend>Residence Address {{ i + 1 }}</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Flat/House NO</label>
+              <input type="text" [value]="person.Flat_House_NO" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Floor No</label>
+              <input [value]="person.Floor_No" type="text" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Building Name</label>
+              <input [value]="person.Building_Name" type="text" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Road/Street Name</label>
+              <input type="text" [value]="person.Road_Street_Name" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Locality</label>
+              <input [value]="person.Locality" type="text" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>State</label>
+              <select formControlName="State" readonly>
+                <option value="-1">Select</option>
+                <option *ngFor="let State of StatesList">
+                  {{ State }}
+                </option>
+              </select>
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>District</label>
+              <input type="text" [value]="person.City" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Pin Code</label>
+              <input [value]="person.Pincode" type="text" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Authorized Signatory </label>
+              <div class="form-group form-control" readonly>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input value="Yes" type="radio" id="Yes" name="isAuthorizedSignatory" class="custom-control-input"
+                    readonly />
+                  <label class="custom-control-label" for="Yes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="No" value="No" name="isAuthorizedSignatory" class="custom-control-input"
+                    readonly />
+                  <label class="custom-control-label" for="No">No </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset formGroupName="Primary_Authorised_Signatory">
+          <legend>Authorised Signatory</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>First Name</label>
+              <input type="text" formControlName="First_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Middle Name</label>
+              <input type="text" formControlName="Middle_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Last Name</label>
+              <input type="text" formControlName="Last_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Father First Name</label>
+              <input type="text" formControlName="Father_First_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Father Middle Name</label>
+              <input type="text" formControlName="Father_Middle_Name" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Father Last Name</label>
+              <input type="text" formControlName="Father_Last_Name" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>DOB</label>
+              <input type="text" type="date" formControlName="DOB" readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Mobile Number</label>
+              <input type="text" (keypress)="isNumber($event)" maxlength="10" formControlName="Mobile_Number"
+                readonly />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Email Id</label>
+              <input type="text" formControlName="Email_Id" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Gender</label>
+              <select formControlName="Gender" readonly>
+                <option value="-1">Select</option>
+                <option [value]="Gender" *ngFor="let Gender of GenderList">
+                  {{ Gender }}
+                </option>
+              </select>
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Telephone No</label>
+              <input type="text" readonly formControlName="Telephone_No" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>FAX Number</label>
+              <input type="text" formControlName="FAX_No" readonly />
+            </div>
+          </div>
+          <legend>Identity Information</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Designation / Status</label>
+              <input type="text" formControlName="Designation" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Director Identifciation Number</label>
+              <input type="text" readonly formControlName="Identifciation_No" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Are you a citizen of India</label>
+              <div class="form-group form-control" readonly>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input value="Yes" type="radio" id="Yes" formControlName="isIndianCitizen" readonly
+                    name="isIndianCitizen" class="custom-control-input" />
+                  <label class="custom-control-label" for="Yes">Yes</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" id="No" value="No" formControlName="isIndianCitizen" readonly
+                    name="isIndianCitizen" class="custom-control-input" />
+                  <label class="custom-control-label" for="No">No </label>
+                </div>
+              </div>
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Permanent Account Number (PAN)</label>
+              <input type="text" formControlName="PAN" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Passport Number</label>
+              <input type="text" formControlName="Passport_No" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Aadhar Number</label>
+              <input type="text" formControlName="Aadhar_No" readonly />
+            </div>
+          </div>
+          <legend>Residence Address</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Flat/House NO</label>
+              <input type="text" formControlName="Flat_House_NO" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Floor No</label>
+              <input type="text" formControlName="Floor_No" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Building Name</label>
+              <input type="text" formControlName="Building_Name" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Road/Street Name</label>
+              <input type="text" formControlName="Road_Street_Name" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Locality</label>
+              <input type="text" formControlName="Locality" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>State</label>
+              <select formControlName="State" readonly>
+                <option value="-1">Select</option>
+                <option *ngFor="let State of StatesList">
+                  {{ State }}
+                </option>
+              </select>
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>District</label>
+              <input type="text" formControlName="District" readonly />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Pin Code</label>
+              <input type="text" formControlName="Pincode" readonly />
+            </div>
+          </div>
+        </fieldset>
+      </fieldset>
+
+      <fieldset>
+        <legend>Promoters/Partner</legend>
+        <fieldset *ngFor="let item of Promoters_Partner_Details; let i = index">
+          <legend>Personal Information ({{ i + 1 }})</legend>
+
+          <fieldset>
+            <legend>Name of Person</legend>
+            <div class="row">
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>First Name </label>
+                <input type="text" [value]="item.First_Name" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Middle Name </label>
+                <input type="text" [value]="item.Middle_Name" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Last Name </label>
+                <input type="text" [value]="item.Last_Name" readonly />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Name of Husband/Father</legend>
+            <div class="row">
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>First Name </label>
+                <input type="text" [value]="item.NameOfHusbandAndFather.First_Name" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Middle Name </label>
+                <input type="text" [value]="item.NameOfHusbandAndFather.Middle_Name" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Last Name </label>
+                <input type="text" [value]="item.NameOfHusbandAndFather.Last_Name" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Date of Birth</label>
+                <input type="date" [value]="item.NameOfHusbandAndFather.DateOfBirth" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Mobile No </label>
+                <input type="text" [value]="item.NameOfHusbandAndFather.MobileNo" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Email ID </label>
+                <input type="text" [value]="item.NameOfHusbandAndFather.EmailID" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Gender </label>
+                <select [value]="item.NameOfHusbandAndFather.Gender" readonly>
+                  <option value="-1">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Gender Telephone No With Std Code </label>
+                <input type="text" [value]="
+                    item.NameOfHusbandAndFather.GenderTelephoneNoWithStdCode
+                  " readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Fax Number With STD Code</label>
+                <input type="text" [value]="item.NameOfHusbandAndFather.FaxNumberWithSTDCode" readonly />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Identity Information</legend>
+            <div class="row">
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Designation / Status </label>
+                <input type="text" [value]="item.IdentityInformation.DesignationStatus" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Director Identification Number </label>
+                <input type="text" [value]="
+                    item.IdentityInformation.DirectorIdentificationNumber
+                  " readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Are You a Citizen of India </label>
+                <input type="text" [value]="item.IdentityInformation.AreYouACitizenOfIndia" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Permanent Account Number (PAN) </label>
+                <input type="text" [value]="item.IdentityInformation.PermanentAccountNumber" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Passport Number </label>
+                <input type="text" [value]="item.IdentityInformation.PassportNumber" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Aadhaar Number </label>
+                <input type="text" [value]="item.IdentityInformation.AadhaarNumber" readonly />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Residence Address In India</legend>
+            <div class="row">
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Building No/Flat No / Door No </label>
+                <input type="text" [value]="
+                    item.ResidenceAddressInIndia.BuildingNo_FlatNo_DoorNo
+                  " readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Floor No </label>
+                <input type="text" [value]="item.ResidenceAddressInIndia.FloorNo" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Name of the Premises/Building </label>
+                <input type="text" [value]="
+                    item.ResidenceAddressInIndia.NameOfThePremises_Building
+                  " readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Road/Street/Lane </label>
+                <input type="text" [value]="item.ResidenceAddressInIndia.Road_Street_Lane" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Locality/Area/Village </label>
+                <input type="text" [value]="item.ResidenceAddressInIndia.Locality_Area_Village" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>State </label>
+                <input type="text" [value]="item.ResidenceAddressInIndia.State" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>District </label>
+                <input type="text" [value]="item.ResidenceAddressInIndia.District" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Pin Code </label>
+                <input type="text" [value]="item.ResidenceAddressInIndia.PinCode" readonly />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Other Information</legend>
+            <div class="row">
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Authorised Sinatory</label>
+                <input type="text" [value]="item.OtherInformation.AuthorisedSinatory" readonly />
+              </div>
+            </div>
+          </fieldset>
+        </fieldset>
+      </fieldset>
+
+      <!-- TYPES OF Authorized REPRESENTATIVE -->
+      <fieldset formGroupName="Authorized_Representative">
+        <legend>Details of Authorized Representative</legend>
+        <fieldset>
+          <legend>Types of Authorized Representative</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>GST Practitioner</label>
+              <input type="text" formControlName="GST_Practitioner" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Others</label>
+              <input type="text" formControlName="Others" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Enrollment Id</label>
+              <input type="text" formControlName="Enrollment_Id" />
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Name Of Person</legend>
+          <div class="row">
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>First Name</label>
+              <input type="text" formControlName="First_Name" />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Middle Name</label>
+              <input type="text" formControlName="Middle_Name" />
+            </div>
+
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Last Name</label>
+              <input type="text" formControlName="Last_Name" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Designation / Status</label>
+              <input type="text" formControlName="Designation" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Mobile Number</label>
+              <input type="text" (keypress)="isNumber($event)" maxlength="10" formControlName="Mobile_Number" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Email Id</label>
+              <input type="text" formControlName="Email_Id" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>Telephone No</label>
+              <input type="text" formControlName="Telephone_No" />
+            </div>
+            <div class="col col-xs-6 col-sm-6 col-lg-6">
+              <label>FAX Number</label>
+              <input type="text" formControlName="FAX_No" />
+            </div>
+          </div>
+        </fieldset>
+      </fieldset>
+
+      <!-- <fieldset formGroupName="Contact_Information">
+        <legend>Details of Principal Place of Business</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Building No/Flat No / Door No </label>
+            <input type="text" formControlName="DoorNoPremisesNo" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Floor No </label>
+            <input type="text" formControlName="FloorNo" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Name of the Premises/Building </label>
+            <input type="text" formControlName="BuildingPremiseName" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Road/Street/Lane</label>
+            <input type="text" formControlName="RoadStreetLaneName" readonly />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Locality/Area/Village </label>
+            <input type="text" formControlName="LocalityArea" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State</label>
+            <select formControlName="State" readonly>
+              <option value="-1">Select</option>
+              <option *ngFor="let State of StatesList">
+                {{ State }}
+              </option>
+            </select>
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>District</label>
+            <input type="text" formControlName="District" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Pin Code</label>
+            <input type="text" formControlName="Pincode" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Longitude</label>
+            <input type="text" formControlName="Longitude" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Latitude</label>
+            <input type="text" formControlName="Latitude" readonly />
+          </div>
+        </div>
+        <legend>Contact Information</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Email</label>
+            <input type="text" formControlName="Email" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Office Telephone No with STD Code</label>
+            <input type="text" formControlName="TalephoneNo" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Mobile Number</label>
+            <input
+              type="text"
+              (keypress)="isNumber($event)"
+              maxlength="10"
+              formControlName="Mobile_Number"
+              readonly
+            />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>FAX Number</label>
+            <input type="text" formControlName="FAX_No" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Nature Of Process</label>
+            <input type="text" formControlName="NatureOfProcess" readonly />
+          </div>
+        </div>
+      </fieldset> -->
+
+      <fieldset>
+        <legend>Details of Additional Place of Business</legend>
+        <ng-container *ngFor="let item of Additional_Business_Place_Details; let i = index">
+          <fieldset>
+            <legend>Address</legend>
+            <div class="row">
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Building No/Flat No / Door No </label>
+                <input type="text" [value]="item.DoorNoPremisesNo" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Floor No </label>
+                <input type="text" [value]="item.FloorNo" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Name of the Premises/Building </label>
+                <input type="text" [value]="item.BuildingPremiseName" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Road/Street/Lane</label>
+                <input type="text" [value]="item.RoadStreetLaneName" readonly />
+              </div>
+
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Locality/Area/Village </label>
+                <input type="text" [value]="item.LocalityArea" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>State</label>
+                <select [value]="item.State" readonly>
+                  <option value="-1">Select</option>
+                  <option *ngFor="let State of StatesList">
+                    {{ State }}
+                  </option>
+                </select>
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>District</label>
+                <input type="text" [value]="item.District" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Pin Code</label>
+                <input type="text" [value]="item.Pincode" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Longitude</label>
+                <input type="text" [value]="item.Longitude"
+                  (blur)="onAdditional_BusinessChange(i, $event, 'Longitude')" />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Latitude</label>
+                <input type="text" [value]="item.Latitude"
+                  (blur)="onAdditional_BusinessChange(i, $event, 'Latitude')" />
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Contact Information</legend>
+            <div class="row">
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Email</label>
+                <input type="text" [value]="item.Email" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Office Telephone No with STD Code</label>
+                <input type="text" [value]="item.TalePhoneNo"
+                  (blur)="onAdditional_BusinessChange(i, $event, 'TalePhoneNo')" />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Mobile Number</label>
+                <input type="text" (keypress)="isNumber($event)" maxlength="10" readonly [value]="item.Mobile_Number" />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>FAX Number</label>
+                <input type="text" [value]="item.FAX_No" (blur)="onAdditional_BusinessChange(i, $event, 'FAX_No')" />
+              </div>
+              <!-- <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Consent</label>
+                <input type="text" [value]="item.Consent" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Factory / Manufacturing</label>
+                <input type="text" [value]="item.Factory" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Warehouse</label>
+                <input type="text" [value]="item.Warehouse" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Office</label>
+                <input type="text" [value]="item.Office" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>EOU/ STP/ EHTP</label>
+                <input type="text" [value]="item.EOU_STP_EHTP" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Input Service Distributor</label>
+                <input
+                  type="text"
+                  readonly
+                  [value]="item.Input_Service_Distributor"
+                />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Retail Business</label>
+                <input type="text" [value]="item.Retail_Business" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Wholesale Business</label>
+                <input type="text" [value]="item.Wholesale_Business" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Bonded Warehouse</label>
+                <input type="text" [value]="item.Bonded_Warehouse" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Leasing Business</label>
+                <input type="text" [value]="item.Leasing_Business" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Works Contract</label>
+                <input type="text" [value]="item.Works_Contract" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>SEZ</label>
+                <input type="text" [value]="item.SEZ" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Recipient of services</label>
+                <input type="text" [value]="item.Recipient_Services" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Service Provision</label>
+                <input type="text" [value]="item.Service_Provision" readonly />
+              </div>
+              <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Others</label>
+                <input type="text" [value]="item.Others" readonly />
+              </div> -->
+            </div>
+          </fieldset>
+        </ng-container>
+      </fieldset>
+
+      <fieldset formGroupName="NatureOfPossessionOfPremises">
+        <legend>Nature of Possession Of Premises</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Nature of Possession Of Premises</label>
+            <select formControlName="NatureOfPossessionOfPremises">
+              <option value="-1">Select</option>
+              <option *ngFor="let item of NatureOfPossessionOfPremisesList" [value]="item">
+                {{ item }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Nature of Business Activity</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Nature of Business Activity</label>
+            <select formControlName="Business_Activity" (change)="updateBussinessActivity($event.target.value)">
+              <option value="-1">Select</option>
+              <option *ngFor="let item of NatureOfBusinessActivity" value="{{item}}">
+                {{ item }}
+              </option>
+            </select>
+          </div>
+          <!-- <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Factory / Manufacturing</label>
+            <input type="text" formControlName="Factory" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Warehouse/Depot</label>
+            <input type="text" formControlName="Warehouse" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Office/Sale Office</label>
+            <input type="text" formControlName="Office" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>EOU/ STP/ EHTP</label>
+            <input type="text" formControlName="EOU_STP_EHTP" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Input Service Distributor</label>
+            <input type="text" formControlName="Input_Service_Distributor" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Retail Business</label>
+            <input type="text" formControlName="Retail_Business" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Wholesale Business</label>
+            <input type="text" formControlName="Wholesale_Business" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Bonded Warehouse</label>
+            <input type="text" formControlName="Bonded_Warehouse" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Leasing Business</label>
+            <input type="text" formControlName="Leasing_Business" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Works Contract</label>
+            <input type="text" formControlName="Works_Contract" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>SEZ</label>
+            <input type="text" formControlName="SEZ" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Recipient of Services</label>
+            <input type="text" formControlName="Recipient_Services" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Service Provision</label>
+            <input type="text" formControlName="Service_Provision" />
+          </div> -->
+
+          <div *ngIf="isOtherBussinessActivity" class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Other</label>
+            <input type="text" formControlName="Business_Activity" />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Details of Commodity Supplied</legend>
+        <div *ngFor="let item of Commodity_SupplyList; let i = index" class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>HSN</label>
+            <input type="text" readonly [value]="item.HSNName" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Service HSN</label>
+            <input type="text" readonly [value]="item.ServiceName" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Description</label>
+            <input type="text" [value]="item.Description" (blur)="onHSNDescriptionChange(i, $event)" />
+          </div>
+        </div>
+      </fieldset>
+      <fieldset formGroupName="Bank_Account_Details">
+        <legend>Bank Account Details</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Account Number</label>
+            <input type="text" formControlName="Account_No" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Account Type</label>
+            <input type="text" formControlName="Account_Type" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>IFSC Code</label>
+            <input type="text" formControlName="Ifsc_Code" readonly />
+          </div>
+        </div>
+      </fieldset>
+      <fieldset formGroupName="State_Spec_Info">
+        <legend>State Specific Information</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>ProfessionaL TAX E C Number</label>
+            <input type="text" formControlName="ProTaxECNo" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>ProfessionaL TAX R C Number</label>
+            <input type="text" formControlName="ProTaxRCNo" readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Name of person in whose name excise license is held</label>
+            <input type="text" formControlName="PersonName" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State Excise License Number</label>
+            <input type="text" formControlName="StateLic_No" />
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- <div class="col col-xs-6 col-sm-6 col-lg-6">
+                <label>Create GST Application</label>
+                <input type="text" 
+                    [ngClass]="{'hasError': isSubmitted && frm.get('Lead_no').hasError('required')}"
+                    formControlName="Lead_no" />
+                 <span *ngIf="isSubmitted && frm.get('Lead_no').hasError('required')" class="error">Please
+                    mention SellerName</span>
+                    
+            </div> -->
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <button type="submit">Submit</button>
+        <!-- <button type="button">Print</button> -->
+        <button type="button" *ngIf="isAdmin" (click)="onTabChange('next')">Add Invoice</button>
+        <button type="button" (click)="download()">Download</button>
+        <button type="button">
+          <a style="color: white; text-decoration: none;" href="https://reg.gst.gov.in/registration/"
+            target="_blank">GST</a>
+        </button>
+        <button style="float: right" type="button" routerLink="/Leads/create">
+          Next
+        </button>
+        <button style="float: right" [disabled]="selectedTab == 0" type="button" (click)="onTabChange('previous')">
+          Previous
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">
+      {{ SelectedGST_ID == "-1" ? "Add" : "Edit" }} GST Details
+    </h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col col-12">
+        <label>GST Number</label>
+        <input type="text" placeholder="GST Number" [(ngModel)]="SelectedGST_Number" />
+      </div>
+
+      <div class="col col-12">
+        <label>GST State</label>
+        <select placeholder="GTS State" [(ngModel)]="SelectedGST_State">
+          <option value="-1">Select</option>
+          <option [value]="State" *ngFor="let State of StatesList">
+            {{ State }}
+          </option>
+        </select>
+        <!-- <span *ngIf="isSubmitted && frm.get('GST_State').hasError('required')" class="error">Please
+                mention SellerName</span> -->
+      </div>
+
+      <div class="col col-12">
+        <label>Date</label>
+        <input type="date" placeholder="Date" [(ngModel)]="SelectedGST_Date" />
+      </div>
+
+      <div class="col col-12">
+        <label>Status</label>
+        <input type="text" placeholder="Status" [(ngModel)]="SelectedGST_Status" />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="SelectedGST_State == '-1' || !SelectedGST_Number" type="button" class="editButton"
+      (click)="addState()">
+      {{ SelectedGST_ID == "-1" ? "Save" : "Update" }}
+    </button>
+  </div>
+</ng-template>

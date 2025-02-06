@@ -1,0 +1,25 @@
+
+<section class="container-fluid d-flex align-items-center justify-content-center">
+    <aside>
+        <div class="p-3">
+            <h1>Reset Password</h1>
+            <div class="alert" *ngIf="pgMsg" [ngClass]="pgMsg.alert" role="alert">{{pgMsg.msg}}</div>
+            <form [formGroup]="resetFrm" (submit)="restUsr()">
+                <h4>New Password</h4>
+                <input type="password" formControlName="passCode" />
+                <div class="alert ipAlert alert-danger" *ngIf="regSubmit && autoReg.passCode.errors">
+                    <div *ngIf="autoReg.passCode.errors.required">Please mention your password!</div>
+                </div>
+                <h4>Confirm Password</h4>
+                <input type="password" formControlName="confPass" />
+                <div class="alert ipAlert alert-danger" *ngIf="regSubmit && autoReg.confPass.errors">
+                    <div *ngIf="autoReg.confPass.errors.required">Please mention your confirm password!</div>
+                </div>
+                <div class="alert ipAlert alert-danger" *ngIf="regSubmit && autoReg.passCode.value !== autoReg.confPass.value">
+                    <div>Confirm password not match!</div>
+                </div>
+                <button type="submit" [disabled]="regBtn">Reset</button>
+            </form>
+        </div>
+    </aside>
+</section>

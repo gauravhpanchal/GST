@@ -1,0 +1,44 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Add Testimonial</h2>
+                <a routerLink="/testimonials/all" class="btn">&larr; Back to List</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <form [formGroup]="testyFrm" (submit)="newTesty()">
+                <h4>Username</h4>
+                <input type="text" placeholder="Username" formControlName="usrName" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="testySubmit && tyFrm.usrName.errors">
+                    <div *ngIf="tyFrm.usrName.errors.required">Please enter username</div>
+                </div>
+                <h4>User Image</h4>
+                <input type="text" placeholder="User Image URL" formControlName="usrImg" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="testySubmit && tyFrm.usrImg.errors">
+                    <div *ngIf="tyFrm.usrImg.errors.required">Please enter user image url</div>
+                </div>
+                <h4>Country</h4>
+                <input type="text" placeholder="Country" formControlName="country" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="testySubmit && tyFrm.country.errors">
+                    <div *ngIf="tyFrm.country.errors.required">Please enter user country</div>
+                </div>
+                <h4>Rating</h4>
+                <input type="number" min="0" max="5" placeholder="Rating" formControlName="rating" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="testySubmit && tyFrm.rating.errors">
+                    <div *ngIf="tyFrm.rating.errors.required">Please enter user rating</div>
+                </div>
+                <h4>Details</h4>
+                <textarea placeholder="Details" formControlName="details"></textarea>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="testySubmit && tyFrm.usrName.errors">
+                    <div *ngIf="tyFrm.usrName.errors.required">Please username</div>
+                </div>
+                <button type="submit" [disabled]="testyBtm">Done</button>
+            </form>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

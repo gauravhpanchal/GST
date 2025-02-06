@@ -1,0 +1,40 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Forms for Other sites</h2>
+                <a routerLink="/forms/all" class="btn">&larr; All Form</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <form [formGroup]="webFrm" (submit)="newFrm()">
+                <h4>Website</h4>
+                <input type="text" placeholder="Website" formControlName="website" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="frmSubmit && wbFrm.website.errors">
+                    <div *ngIf="wbFrm.website.errors.required">Please enter user website without space</div>
+                </div>
+                <h4>User Name</h4>
+                <input type="text" placeholder="Login Id" formControlName="usrName" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="frmSubmit && wbFrm.usrName.errors">
+                    <div *ngIf="wbFrm.usrName.errors.required">Please enter user name</div>
+                </div>
+                <h4>Email</h4>
+                <input type="text" placeholder="Email Address" formControlName="email" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="frmSubmit && wbFrm.email.errors">
+                    <div *ngIf="wbFrm.email.errors.required">Please enter user third party password</div>
+                    <div *ngIf="wbFrm.email.errors.email">Please enter a valid email address</div>
+                </div>
+                <h4>Password</h4>
+                <input type="password" placeholder="Login Password" formControlName="passCode" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="frmSubmit && wbFrm.passCode.errors">
+                    <div *ngIf="wbFrm.passCode.errors.required">Please enter user third party password</div>
+                </div>
+                <button type="submit" [disabled]="frmBtm">Done</button>
+            </form>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

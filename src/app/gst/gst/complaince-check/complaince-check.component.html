@@ -1,0 +1,544 @@
+<div class="cotainer">
+  <div class="row" *ngIf="frm.dirty">
+    <div
+      class="col-12 alert alert-danger"
+      role="alert"
+      style="text-align: center; color: #ff5834; margin: 5px"
+    >
+      Click save button to save current changes.
+    </div>
+  </div>
+  <form [formGroup]="frm" (submit)="onSubmit()">
+    <fieldset>
+      <legend>Uploaded Images</legend>
+      <div class="row">
+        <div class="col-12" style="margin-top: 10px">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Section Name</th>
+                <th scope="col">Document Name</th>
+                <th scope="col">File Name</th>
+                <th scope="col">Uploaded On</th>
+                <th scope="col">Download</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let f of fileDetails.reverse(); let i = index">
+                <td scope="row">{{ i + 1 }}</td>
+                <td>{{ f?.sectionName }}</td>
+                <td>{{ f?.documentName }}</td>
+                <td>{{ f?.originalFileName }}</td>
+                <td>{{ f?.uploadedOn | date : "dd/MM/yyyy HH:mm" }}</td>
+                <td
+                  (click)="downloadFile(f)"
+                  title="Download"
+                  style="cursor: pointer"
+                >
+                  <img src="/assets/images/download.svg" />
+                </td>
+              </tr>
+
+              <tr *ngIf="fileDetails.length === 0">
+                <td colspan="5">Data Not Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </fieldset>
+    <div class="row">
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>PICS</label>
+        <div class="form-group form-control">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="PICS"
+              value="Yes"
+              type="radio"
+              id="Yes"
+              name="PICS"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="Yes">Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="PICS"
+              value="No"
+              type="radio"
+              id="No"
+              name="PICS"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="No">Not Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="PICS"
+              value="NA"
+              type="radio"
+              id="NA"
+              name="PICS"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="NA">NA </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>COI</label>
+        <div class="form-group form-control">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="COI"
+              value="Yes"
+              type="radio"
+              id="Yes"
+              name="COI"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="Yes">Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="COI"
+              value="No"
+              type="radio"
+              id="No"
+              name="COI"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="No">Not Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="COI"
+              value="NA"
+              type="radio"
+              id="NA"
+              name="COI"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="NA">NA </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>DEED</label>
+        <div class="form-group form-control">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="DEED"
+              value="Yes"
+              type="radio"
+              id="Yes"
+              name="DEED"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="Yes">Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="DEED"
+              value="No"
+              type="radio"
+              id="No"
+              name="DEED"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="No">Not Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="DEED"
+              value="NA"
+              type="radio"
+              id="NA"
+              name="DEED"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="NA">NA </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>PAN</label>
+        <div class="form-group form-control">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="PAN"
+              value="Yes"
+              type="radio"
+              id="Yes"
+              name="PAN"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="Yes">Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="PAN"
+              value="No"
+              type="radio"
+              id="No"
+              name="PAN"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="No">Not Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="PAN"
+              value="NA"
+              type="radio"
+              id="NA"
+              name="PAN"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="NA">NA </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Aadhaar</label>
+        <div class="form-group form-control">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="Aadhaar"
+              value="Yes"
+              type="radio"
+              id="Yes"
+              name="Aadhaar"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="Yes">Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="Aadhaar"
+              value="No"
+              type="radio"
+              id="No"
+              name="Aadhaar"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="No">Not Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="Aadhaar"
+              value="NA"
+              type="radio"
+              id="NA"
+              name="Aadhaar"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="NA">NA </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Authorised Signatory</label>
+        <div class="form-group form-control">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="AuthorisedSignatory"
+              value="Yes"
+              type="radio"
+              id="Yes"
+              name="AuthorisedSignatory"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="Yes">Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="AuthorisedSignatory"
+              value="No"
+              type="radio"
+              id="No"
+              name="AuthorisedSignatory"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="No">Not Uploaded </label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input
+              formControlName="AuthorisedSignatory"
+              value="NA"
+              type="radio"
+              id="NA"
+              name="AuthorisedSignatory"
+              class="custom-control-input"
+            />
+            <label class="custom-control-label" for="NA">NA </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Email Id</label>
+        <input
+          type="text"
+          placeholder="Email Id"
+          readonly
+          [ngClass]="{
+            hasError: isSubmitted && frm.get('EmailId').hasError('required')
+          }"
+          formControlName="EmailId"
+        />
+        <!-- <span *ngIf="isSubmitted && frm.get('EmailId').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Contact Number</label>
+        <input
+          type="text"
+          placeholder="Contact Number"
+          readonly
+          [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('ContactNumber').hasError('required')
+          }"
+          formControlName="ContactNumber"
+        />
+        <!-- <span *ngIf="isSubmitted && frm.get('ContactNumber').hasError('required')" class="error">Please
+                    mention SellerName</span> -->
+      </div>
+
+      <fieldset>
+        <legend>GSTR Field</legend>
+        <div class="row">
+          <div class="container">
+            <fieldset>
+              <legend>GST3B2</legend>
+              <div class="row" formGroupName="GST3B2">
+                <div class="col col-xs-6 col-sm-6 col-lg-6">
+                  <label>Financial Year</label>
+                  <input
+                    type="text"
+                    placeholder="Financial Year"
+                    [ngClass]="{
+                      hasError:
+                        isSubmitted &&
+                        frm.get('FinancialYear').hasError('required')
+                    }"
+                    formControlName="FinancialYear"
+                  />
+                </div>
+
+                <div class="col col-xs-6 col-sm-6 col-lg-6">
+                  <label>Tax Period</label>
+                  <input
+                    type="text"
+                    placeholder="Tax Period"
+                    [ngClass]="{
+                      hasError:
+                        isSubmitted && frm.get('TaxPeriod').hasError('required')
+                    }"
+                    formControlName="TaxPeriod"
+                  />
+                </div>
+
+                <div class="col col-xs-6 col-sm-6 col-lg-6">
+                  <label>Date Of Filling</label>
+                  <input
+                    type="date"
+                    placeholder="Date Of Filling"
+                    [ngClass]="{
+                      hasError:
+                        isSubmitted &&
+                        frm.get('DateOfFilling').hasError('required')
+                    }"
+                    formControlName="DateOfFilling"
+                  />
+                </div>
+
+                <div class="col col-xs-6 col-sm-6 col-lg-6">
+                  <label>Status</label>
+                  <input
+                    type="text"
+                    placeholder="Status"
+                    [ngClass]="{
+                      hasError:
+                        isSubmitted && frm.get('Status').hasError('required')
+                    }"
+                    formControlName="Status"
+                  />
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="container">
+            <fieldset>
+              <legend>GST3B</legend>
+              <div class="row" formGroupName="GST3B">
+                <div class="col col-xs-6 col-sm-6 col-lg-6">
+                  <label>Financial Year</label>
+                  <input
+                    type="text"
+                    placeholder="Financial Year"
+                    [ngClass]="{
+                      hasError:
+                        isSubmitted &&
+                        frm.get('FinancialYear').hasError('required')
+                    }"
+                    formControlName="FinancialYear"
+                  />
+                </div>
+
+                <div class="col col-xs-6 col-sm-6 col-lg-6">
+                  <label>Tax Period</label>
+                  <input
+                    type="text"
+                    placeholder="Tax Period"
+                    [ngClass]="{
+                      hasError:
+                        isSubmitted && frm.get('TaxPeriod').hasError('required')
+                    }"
+                    formControlName="TaxPeriod"
+                  />
+                </div>
+
+                <div class="col col-xs-6 col-sm-6 col-lg-6">
+                  <label>Date Of Filling</label>
+                  <input
+                    type="date"
+                    placeholder="Date Of Filling"
+                    [ngClass]="{
+                      hasError:
+                        isSubmitted &&
+                        frm.get('DateOfFilling').hasError('required')
+                    }"
+                    formControlName="DateOfFilling"
+                  />
+                </div>
+
+                <div class="col col-xs-6 col-sm-6 col-lg-6">
+                  <label>Status</label>
+                  <input
+                    type="text"
+                    placeholder="Status"
+                    [ngClass]="{
+                      hasError:
+                        isSubmitted && frm.get('Status').hasError('required')
+                    }"
+                    formControlName="Status"
+                  />
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Quarterly Check Reminder</label>
+            <input
+              type="text"
+              placeholder="Quarterly Check Reminder"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.get('QuarterlyCheckReminder').hasError('required')
+              }"
+              formControlName="QuarterlyCheckReminder"
+            />
+            <!-- <span *ngIf="isSubmitted && frm.get('QuarterlyCheckReminder').hasError('required')" class="error">Please
+                                        mention SellerName</span> -->
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>GSTR1</label>
+            <input
+              type="text"
+              placeholder="GSTR1"
+              [ngClass]="{
+                hasError: isSubmitted && frm.get('GSTR1').hasError('required')
+              }"
+              formControlName="GSTR1"
+            />
+            <!-- <span *ngIf="isSubmitted && frm.get('GSTR1').hasError('required')" class="error">Please
+                                        mention SellerName</span> -->
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Cancel Agreement </label>
+            <select
+              [ngClass]="{
+                hasError:
+                  isSubmitted && frm.get('CancelAgreement').hasError('required')
+              }"
+              formControlName="CancelAgreement"
+            >
+              <option value="-1">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Issue Letter To Seller </label>
+            <select
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.get('IssueLetterToSeller').hasError('required')
+              }"
+              formControlName="IssueLetterToSeller"
+            >
+              <option value="-1">Select</option>
+              <option [value]="doc" *ngFor="let doc of yesNoOption">
+                {{ doc }}
+              </option>
+            </select>
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Issue Letter To GST</label>
+            <select
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.get('IssueLetterToGST').hasError('required')
+              }"
+              formControlName="IssueLetterToGST"
+            >
+              <option value="-1">Select</option>
+              <option [value]="doc" *ngFor="let doc of yesNoOption">
+                {{ doc }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <button type="submit">Save</button>
+        <button
+          style="float: right"
+          type="button"
+          (click)="onTabChange('next')"
+        >
+          Next
+        </button>
+        <button
+          style="float: right"
+          [disabled]="selectedTab == 0"
+          type="button"
+          (click)="onTabChange('previous')"
+        >
+          Previous
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

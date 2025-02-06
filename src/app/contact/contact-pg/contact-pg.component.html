@@ -1,0 +1,44 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Order List</h2>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <table *ngIf="contactList">
+                <thead>
+                    <tr>
+                        <th>Website</th>
+                        <th>Plan</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>E-mail</th>
+                        <th>Payment Method</th>
+                        <th>Payment Status</th>
+                        <th>Send On</th>
+                        <th>Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let cInfo of contactList">
+                        <td class="text-left">{{cInfo.webPg}}</td>
+                        <td>{{cInfo.planTitle}}</td>
+                        <td>{{cInfo.fstName}}</td>
+                        <td>{{cInfo.lstName}}</td>
+                        <td>{{cInfo.yrEmail}}</td>
+                        <td>{{cInfo.payMethod}}</td>
+                        <td>{{cInfo?.payStatus}}</td>
+                        <td *ngIf="cInfo.createdOn._seconds == undefined">{{ cInfo.createdOn | date: 'medium'}}</td>
+                        <td *ngIf="cInfo.createdOn._seconds != undefined"></td>
+                        <td><a (click)="viewDetails(cInfo.id)">View</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

@@ -1,0 +1,46 @@
+<section class="container-fluid d-flex justify-content-center align-items-center">
+    <aside>
+        <div class="p-4 text-center">
+            <h1>Travelvisaguru Admin</h1>
+            <!-- <div *ngIf="logMsg" class="alert text-center" [ngClass]="logMsg.alert" role="alert">
+                    {{logMsg.msg}}
+                </div> -->
+            <form [formGroup]="logFrm" (submit)="logOnSubmit()">
+                <input type="text" placeholder="Username" formControlName="yrId" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="logSubmit && lgFrm.yrId.errors">
+                    <div *ngIf="lgFrm.yrId.errors.required">Please mention your username</div>
+                </div>
+                <input type="password" placeholder="Password" formControlName="yrPass" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="logSubmit && lgFrm.yrPass.errors">
+                    <div *ngIf="lgFrm.yrPass.errors.required">Please mention your password</div>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <hr />
+            <a (click)="openModal(template)">Forgot Password?</a>
+        </div>
+    </aside>
+</section>
+
+
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Forgot Password</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+            {{pgMsg.msg}}
+        </div>
+        <form [formGroup]="fgtFrm" (submit)="fgtUsr()">
+            <h4>Login ID</h4>
+            <input type="text" formControlName="email" />
+            <div class="alert ipAlert alert-danger" *ngIf="fgtSubmit && autoFgt.email.errors">
+                <div *ngIf="autoFgt.email.errors.required">Please mention your email address!</div>
+            </div>
+            <button type="submit" [disabled]="fgtBtn">Reset</button>
+        </form>
+    </div>
+</ng-template>

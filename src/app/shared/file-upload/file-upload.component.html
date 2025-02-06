@@ -1,0 +1,102 @@
+<!-- <div class="p-4">
+    <div id="pageHead">
+        <h2>Upload {{uploadFileLableName}}</h2>
+    </div>
+    <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+        {{pgMsg.msg}}
+    </div>
+    <ul id="dataList">
+        <li>
+            <span class="imgSec" [ngClass]="{'upIco': upIco}" [style.background-image]="'url('+defaultImg+')'">
+                <label for="imgUp"></label>
+            </span>
+            <article>
+                <h3>Upload file in {{upTypes.join('/')}} format!</h3>
+                <p>must be under 4mb</p>
+                <input type="file" [(ngModel)]="imgUp" id="imgUp" (change)="selectFile($event)" />
+                <div class="clear"></div>
+                <div class="progBar" *ngIf="uploading">
+                    <span [style.width]="percent+'%'"></span>
+                </div>
+                <button type="submit" [ngClass]="{'disabled':imgUp==''}" [disabled]="imgUp=='' || pgMsg"
+                    *ngIf="!uploading" (click)="uploadNow()">Upload</button>
+                <button type="button" class="downloadButton" [ngClass]="{'disabled':fileDetails.url==''}"
+                    [disabled]="fileDetails.url==''" *ngIf="!uploading && imgUp==''"
+                    (click)="downloadNow()">Download</button>
+            </article>
+        </li>
+
+    </ul>
+</div> -->
+
+<div class="p-4">
+    <div id="pageHead">
+        <h2>Upload {{uploadFileLableName}}</h2>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6 form-group">
+            <label>Document Name</label>
+            <select class="form-control" [ngClass]="{'hasError': isDocumentNameSelected}"
+                [(ngModel)]="selectedDocumentName">
+                <option value="-1">Select</option>
+                <option [value]="doc" *ngFor="let doc of DocumentNameList">
+                    {{doc}}</option>
+            </select>
+            <span *ngIf="isDocumentNameSelected" class="error">Please
+                Select Document Name</span>
+        </div>
+        <div class="col-sm-12 col-md-6 form-group">
+            <label>Upload </label>
+            <input class="form-control" type="file" [(ngModel)]="imgUp" id="imgUp" (change)="selectFile($event)" />
+            <span *ngIf="isFileSelected" class="error">Please
+                Select File</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12" style="text-align: end;">
+            <button [ngClass]="{'disabled':imgUp=='' || selectedDocumentName=='-1' || pgMsg}"
+                [disabled]="selectedDocumentName=='-1' ||imgUp=='' || pgMsg" type="button" (click)="UploadFile()">Upload
+                File</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12" style="margin-top:10px;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Document Name</th>
+                        <th scope="col">File Name</th>
+                        <th scope="col">Uploaded On</th>
+                        <th scope="col">Download</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let f of fileDetails.reverse(); let i = index">
+                        <td scope="row">{{i+1}}</td>
+                        <td>{{f?.documentName}}</td>
+                        <td>{{f?.originalFileName}}</td>
+                        <td>{{f?.uploadedOn | date: 'dd/MM/yyyy HH:mm'}}</td>
+                        <td>
+                            <img src="/assets/images/download.svg" (click)="downloadFile(f)" title="Download"
+                                style="cursor: pointer;">
+                            <img src="/assets/images/delete.svg" (click)="removeFile(f)" class="delete" title="Delete">
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="fileDetails.length===0">
+                        <td colspan="5">Data Not Found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

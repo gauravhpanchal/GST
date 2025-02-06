@@ -1,0 +1,55 @@
+<app-header></app-header>
+<section class="d-flex justify-content-between">
+    <app-side-nav></app-side-nav>
+    <section id="mainContent">
+        <div class="p-4">
+            <div id="pageHead">
+                <h2>Add New Plan</h2>
+                <a routerLink="/plan/all" class="btn">&larr; Back to List</a>
+            </div>
+            <div *ngIf="pgMsg" class="alert text-center" [ngClass]="pgMsg.alert" role="alert">
+                {{pgMsg.msg}}
+            </div>
+            <form [formGroup]="planFrm" (submit)="newPlan()">
+                <h4>Title</h4>
+                <input type="text" placeholder="Price Title" formControlName="pTitle" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="pSubmit && pFrm.pTitle.errors">
+                    <div *ngIf="pFrm.pTitle.errors.required">Please enter price title</div>
+                </div>
+                <h4>Image</h4>
+                <input type="text" placeholder="Price Image" formControlName="priceImg" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="pSubmit && pFrm.priceImg.errors">
+                    <div *ngIf="pFrm.priceImg.errors.required">Please enter image URL</div>
+                </div>
+                <h4>Amount in USD</h4>
+                <input type="text" placeholder="USD" formControlName="amount" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="pSubmit && pFrm.amount.errors">
+                    <div *ngIf="pFrm.amount.errors.required">Please enter amount in dollar</div>
+                </div>
+
+                <h4>Amount in INR</h4>
+                <input type="text" placeholder="INR" formControlName="amountINR" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="pSubmit && pFrm.amountINR.errors">
+                    <div *ngIf="pFrm.amountINR.errors.required">Please enter amount in Indian Rupees</div>
+                </div>
+                <h4>Additional Number of Traveler & Price in USD (separated by comma)</h4>
+                <input type="text" placeholder="Additional Traveler Price in USD" formControlName="travelers" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="pSubmit && pFrm.travelers.errors">
+                    <div *ngIf="pFrm.travelers.errors.required">Please enter price for additional details</div>
+                </div>
+                <h4>Additional Number of Traveler & Price in INR (separated by comma)</h4>
+                <input type="text" placeholder="Additional Traveler Price in INR" formControlName="travelersINR" />
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="pSubmit && pFrm.travelersINR.errors">
+                    <div *ngIf="pFrm.travelersINR.errors.required">Please enter price for additional details</div>
+                </div>
+                <h4>Feature List (separated by comma)</h4>
+                <textarea placeholder="All Features" formControlName="featureList"></textarea>
+                <div class="alert alert-danger inputMsg" role="alert" *ngIf="pSubmit && pFrm.featureList.errors">
+                    <div *ngIf="pFrm.featureList.errors.required">Please enter all features</div>
+                </div>
+                <button type="submit" [disabled]="planBtm">Done</button>
+            </form>
+        </div>
+    </section>
+</section>
+<app-footer></app-footer>

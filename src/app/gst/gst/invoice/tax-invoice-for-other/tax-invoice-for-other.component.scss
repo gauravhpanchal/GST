@@ -1,0 +1,43 @@
+@import url('../../_gst.scss');
+
+.table td, .table th {
+  vertical-align: middle;
+}
+
+#invoice_content {
+  width: 550px; 
+  font-size: 7px;
+}
+
+#invoice_content table {
+  margin-bottom: 0;
+}
+
+#invoice_content thead tr th {
+  background-color: #fff; 
+  color: #000; 
+  font-size: 8px;
+  border-top: none;
+}
+
+#invoice_content td, #invoice_content th {
+  padding: 0.1rem 0.25rem;
+  border: 1px solid #000;
+}
+
+#invoice_content tr:not(:last-child) td, #invoice_content tr:not(:last-child) th {
+  border-bottom: none;
+}
+
+#invoice_content td:not(:last-child), #invoice_content th:not(:last-child) {
+  border-right: none;
+}
+
+// .invoice_content .table-bordered td, .table-bordered th {
+//   border: 1px solid #000;
+// }
+
+// .invoice_content table thead th {
+//   color: #000;
+//   background-color: #fff;
+// }

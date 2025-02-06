@@ -1,0 +1,558 @@
+<div class="cotainer">
+  <div class="row" *ngIf="frm.dirty">
+    <div class="col-12 alert alert-danger" role="alert" style="text-align: center; color: #ff5834; margin: 5px">
+      Click save button to save current changes.
+    </div>
+  </div>
+  <form [formGroup]="frm" (submit)="onSubmit()">
+    <div class="row">
+      <!-- <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Invoice</label>
+        <input
+          type="text"
+          placeholder="Invoice"
+          [ngClass]="{
+            hasError: isSubmitted && frm.get('Invoice').hasError('required')
+          }"
+          formControlName="Invoice"
+        />
+      </div> -->
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Invoice Number</label>
+        <input type="text" placeholder="Invoice Number" [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('Invoice_Number').hasError('required')
+          }" formControlName="Invoice_Number" />
+      </div>
+
+      <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Invoice Date</label>
+        <input type="date" placeholder="Invoice Date" [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('Invoice_Date').hasError('required')
+          }" formControlName="Invoice_Date" />
+      </div>
+
+      <!-- <div class="col col-xs-6 col-sm-6 col-lg-6">
+        <label>Buyer Ref Number</label>
+        <input
+          type="text"
+          placeholder="Buyer Ref Number"
+          [ngClass]="{
+            hasError:
+              isSubmitted && frm.get('Buyer_Ref_Number').hasError('required')
+          }"
+          formControlName="Buyer_Ref_Number"
+        />
+      </div> -->
+    </div>
+    <div class="row" formGroupName="Seller_Details">
+      <fieldset>
+        <legend>Seller Details</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Business Name</label>
+            <input type="text" placeholder="Business Name" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Seller_Details']
+                    .get('Business_Name')
+                    .hasError('required')
+              }" formControlName="Business_Name" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Address1</label>
+            <input type="text" placeholder="Address1" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Seller_Details']
+                    .get('Address1')
+                    .hasError('required')
+              }" formControlName="Address1" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Address2</label>
+            <input type="text" placeholder="Address2" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Seller_Details']
+                    .get('Address2')
+                    .hasError('required')
+              }" formControlName="Address2" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Address3</label>
+            <input type="text" placeholder="Address3" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Seller_Details']
+                    .get('Address3')
+                    .hasError('required')
+              }" formControlName="Address3" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State</label>
+            <input type="text" placeholder="State" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Seller_Details']
+                    .get('State')
+                    .hasError('required')
+              }" formControlName="State" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State Code</label>
+            <input type="text" placeholder="State Code" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Seller_Details']
+                    .get('State_Code')
+                    .hasError('required')
+              }" formControlName="State_Code" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>GST No</label>
+            <input type="text" placeholder="GST No" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Seller_Details']
+                    .get('GST_No')
+                    .hasError('required')
+              }" formControlName="GST_No" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>PAN No</label>
+            <input type="text" placeholder="PAN No" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Seller_Details']
+                    .get('PAN_No')
+                    .hasError('required')
+              }" formControlName="PAN_No" />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="row" *ngIf="hasProp(cumulativeMonth)">
+      <fieldset>
+        <legend>Annexure Discount Details</legend>
+        <div *ngFor="let data of cumulativeMonth | keyvalue" class="row">
+          <div class="col col-xs-12 col-sm-12 col-lg-5">
+            <label>Lead No.(s)</label>
+            <input type="text" placeholder={{data.value.lead_no}} readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-1">
+            <label>Group</label>
+            <input type="text" placeholder={{data.key}} readonly />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-2">
+            <label>No. of Records</label>
+            <input type="text" placeholder={{data.value.records_count}} readonly />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-2">
+            <label>Discount (%)</label>
+            <input (keypress)="isNumber($event)" type="text" placeholder="0%" maxlength="3"
+              placeholder="{{data.value.discount}}" (input)="updateDiscount(data.key, $event.target.value)" />
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-2">
+            <label>Discount Amount</label>
+            <input type="text" placeholder="{{data.value.discount_amount}}" name="discount_amount" readonly>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="row">
+      <fieldset formGroupName="Buyer_Details">
+        <legend>Buyer Details</legend>
+        <div class="row">
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Business Name</label>
+            <input type="text" placeholder="Business Name" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Business_Name')
+                    .hasError('required')
+              }" formControlName="Business_Name" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Address1</label>
+            <input type="text" placeholder="Address1" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Address1')
+                    .hasError('required')
+              }" formControlName="Address1" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Address2</label>
+            <input type="text" placeholder="Address2" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Address2')
+                    .hasError('required')
+              }" formControlName="Address2" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Address3</label>
+            <input type="text" placeholder="Address3" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Address3')
+                    .hasError('required')
+              }" formControlName="Address3" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State</label>
+            <input type="text" placeholder="State" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('State')
+                    .hasError('required')
+              }" formControlName="State" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>State Code</label>
+            <input type="text" placeholder="State Code" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('State_Code')
+                    .hasError('required')
+              }" formControlName="State_Code" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>GST No</label>
+            <input type="text" placeholder="GST No" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('GST_No')
+                    .hasError('required')
+              }" formControlName="GST_No" />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>PAN No</label>
+            <input type="text" placeholder="PAN No" [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('PAN_No')
+                    .hasError('required')
+              }" formControlName="PAN_No" />
+          </div>
+
+          <!-- <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Item Number</label>
+            <input
+              type="text"
+              placeholder="Item Number"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Item_Number')
+                    .hasError('required')
+              }"
+              formControlName="Item_Number"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Description</label>
+            <input
+              type="text"
+              placeholder="Description"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Description')
+                    .hasError('required')
+              }"
+              formControlName="Description"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>HSN</label>
+            <input
+              type="text"
+              placeholder="HSN"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details'].get('HSN').hasError('required')
+              }"
+              formControlName="HSN"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Qty</label>
+            <input
+              type="text"
+              placeholder="Qty"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details'].get('Qty').hasError('required')
+              }"
+              formControlName="Qty"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Rate</label>
+            <input
+              type="text"
+              placeholder="Rate"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details'].get('Rate').hasError('required')
+              }"
+              formControlName="Rate"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Discount</label>
+            <input
+              type="text"
+              placeholder="Discount"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Discount')
+                    .hasError('required')
+              }"
+              formControlName="Discount"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Subtotal</label>
+            <input
+              type="text"
+              placeholder="Subtotal"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Subtotal')
+                    .hasError('required')
+              }"
+              formControlName="Subtotal"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Amount</label>
+            <input
+              type="text"
+              placeholder="Amount"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Amount')
+                    .hasError('required')
+              }"
+              formControlName="Amount"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>GST</label>
+            <input
+              type="text"
+              placeholder="GST"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details'].get('GST').hasError('required')
+              }"
+              formControlName="GST"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Final Amount</label>
+            <input
+              type="text"
+              placeholder="Final Amount"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Final_Amount')
+                    .hasError('required')
+              }"
+              formControlName="Final_Amount"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>In Words</label>
+            <input
+              type="text"
+              placeholder="In Words"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('In_Words')
+                    .hasError('required')
+              }"
+              formControlName="In_Words"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>In Number</label>
+            <input
+              type="text"
+              placeholder="In Number"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('In_Number')
+                    .hasError('required')
+              }"
+              formControlName="In_Number"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>GST Amount</label>
+            <input
+              type="text"
+              placeholder="GST Amount"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('GST_Amount')
+                    .hasError('required')
+              }"
+              formControlName="GST_Amount"
+            />
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Terms Of Payment</label>
+            <input
+              type="text"
+              placeholder="Terms Of Payment"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Terms_Of_Payment')
+                    .hasError('required')
+              }"
+              formControlName="Terms_Of_Payment"
+            />
+          </div> 
+          
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Seller Description</label>
+            <input
+              type="text"
+              placeholder="Seller Description"
+              [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Seller_Description')
+                    .hasError('required')
+              }"
+              formControlName="Seller_Description"
+            />
+          </div>
+           -->
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Declaration</label>
+            <textarea
+              readonly>We declare that this invoice shows actual price of the goods described and that all particulars are true and correct</textarea>
+          </div>
+
+          <div class="col col-xs-6 col-sm-6 col-lg-6">
+            <label>Affix Authorised Signatory </label>
+            <select [ngClass]="{
+                hasError:
+                  isSubmitted &&
+                  frm.controls['Buyer_Details']
+                    .get('Affix_Authorised_Signatory')
+                    .hasError('required')
+              }" formControlName="Affix_Authorised_Signatory">
+              <option value="-1">Select</option>
+              <option [value]="doc" *ngFor="let doc of yesNoOption">
+                {{ doc }}
+              </option>
+            </select>
+          </div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6"></div>
+          <div class="col col-xs-6 col-sm-6 col-lg-6" *ngIf="
+              frm.controls['Buyer_Details'].get('Affix_Authorised_Signatory')
+                .value == 'Yes'
+            ">
+            <img src="/assets/images/HarshadaBusinessSolutionSignatory.png" style="width: 150px; height: 50px"
+              *ngIf="frm.controls['Seller_Details'].get('Business_Name').value === 'HARSHADA BUSINESS SOLUTIONS'" />
+            <img src="/assets/images/AlphaOmegaServiceSignatory.jpg" style="width: 150px; height: 50px"
+              *ngIf="frm.controls['Seller_Details'].get('Business_Name').value === 'ALPHA OMEGA SERVICE'" />
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <button type="submit">Save</button>
+        <button style="float: right" type="button" (click)="onTabChange('next')">
+          Next
+        </button>
+        <button style="float: right" [disabled]="selectedTab == 0" type="button" (click)="onTabChange('previous')">
+          Previous
+        </button>
+      </div>
+      <div class="col-6" style="text-align: end">
+        <button type="button" *ngIf='!isInvoiceForCA' (click)="ShowModelTaxInvoiceForOther = true">
+          Tax Invoice
+        </button>
+        <button type="button" *ngIf='isInvoiceForCA' (click)="ShowModelTaxInvoiceForCA = true">
+          Tax Invoice
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-tax-invoice-for-ca [isShow]="ShowModelTaxInvoiceForCA" (ShowHideChange)="ShowHideChangeCAFn($event)">
+</app-tax-invoice-for-ca>
+<app-tax-invoice-for-other [isShow]="ShowModelTaxInvoiceForOther" (ShowHideChange)="ShowHideChangerOtherFn($event)"
+  [bill_data]="cumulativeMonth" [bill_data_count]="cumulativeMonthCount" [total_bill]="total_bill"
+  [total_bill_before_gst]="total_bill" [total_bill_in_words]="total_bill_in_words" [total_quantity]="total_quantity">
+</app-tax-invoice-for-other>
