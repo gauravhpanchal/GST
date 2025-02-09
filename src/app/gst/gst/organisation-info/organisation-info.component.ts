@@ -175,22 +175,34 @@ export class OrganisationInfoComponent implements OnInit, OnDestroy {
         this.btnDisabled = obj.isSubmit === true;
         this.setData(obj);
 
-        if (obj.LeadsForStateSection && (obj.LeadsForStateSection.HOME_STATE_GST_NO || obj.LeadsForStateSection.GST_State)) {
+        if (
+          obj.LeadsForStateSection &&
+          (obj.LeadsForStateSection.HOME_STATE_GST_NO ||
+            obj.LeadsForStateSection.GST_State)
+        ) {
           const homeStateGstData = {
             GST_Date: obj.LeadsForStateSection.GST_DATE,
             GST_Number: obj.LeadsForStateSection.HOME_STATE_GST_NO,
             GST_State: obj.LeadsForStateSection.GST_State,
-            GST_Status: obj.LeadsForStateSection.GTS_Status != '-1' ? obj.LeadsForStateSection.GTS_Status : ""
-          }
+            GST_Status:
+              obj.LeadsForStateSection.GTS_Status != "-1"
+                ? obj.LeadsForStateSection.GTS_Status
+                : "",
+          };
 
-          const gstData = this.frm.get("GST_Details").value
-          const otherStateGstData = gstData ? gstData.filter(el => (
-            el.GST_State != obj.LeadsForStateSection.GST_State &&
-            el.GST_Number != obj.LeadsForStateSection.HOME_STATE_GST_NO
-          )) : []
+          const gstData = this.frm.get("GST_Details").value;
+          const otherStateGstData = gstData
+            ? gstData.filter(
+                (el) =>
+                  el.GST_State != obj.LeadsForStateSection.GST_State &&
+                  el.GST_Number != obj.LeadsForStateSection.HOME_STATE_GST_NO
+              )
+            : [];
 
-          this.frm.get("GST_Details").setValue([homeStateGstData, ...otherStateGstData])
-          this.GST_Details = [homeStateGstData, ...otherStateGstData]
+          this.frm
+            .get("GST_Details")
+            .setValue([homeStateGstData, ...otherStateGstData]);
+          this.GST_Details = [homeStateGstData, ...otherStateGstData];
         }
 
         if (data.oldTabID === this.tabID) {

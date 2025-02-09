@@ -9,7 +9,13 @@ import {
   Output,
   OnDestroy,
 } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormArray,
+  FormControl,
+} from "@angular/forms";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { EmailPattern } from "src/app/shared/utility/constants";
@@ -69,6 +75,23 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
   ];
   EcomCoinList: any[] = ["AMZ", "FK"];
 
+  filterForm: FormGroup;
+  avlMonths = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  avlYears: number[] = [];
+
   NameAsSiteList: any[] = [];
   NameAsSiteListCollection: any[] = [];
   CA_AddressList: any[] = [];
@@ -82,6 +105,11 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
     this.StatesList = service.GetAllStates();
     this.NameAsSiteListCollection = service.getAllNameAsSiteListCollection();
     this.CA_AddressList = service.GetAllCA_Address();
+
+    this.filterForm = new FormGroup({
+      selectedMonths: new FormArray([]),
+      selectedYear: new FormControl("-1"),
+    });
   }
 
   ngOnInit() {
@@ -134,6 +162,7 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
       TypeOfBilling: [""],
       TypeOfBillingDate: [""],
       Seller_PAN_Number: [""],
+      LeadsToBeBilled: [],
     });
 
     this.subscription = this.service.sendDataSubject.subscribe((data) => {
@@ -148,8 +177,8 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
           if (!obj[this.tabID].Seller_PAN_Number) {
             obj[this.tabID].Seller_PAN_Number = "";
           }
-          if (!('GST_DATE' in obj[this.tabID])) {
-            obj[this.tabID]['GST_DATE'] = ""
+          if (!("GST_DATE" in obj[this.tabID])) {
+            obj[this.tabID]["GST_DATE"] = "";
           }
           this.frmSetValue(obj[this.tabID]);
         }
@@ -165,13 +194,28 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
         this.frmSetValue(data);
       }
     });
+
+    // Create form controls for each month
+    this.avlMonths.forEach(() => {
+      (this.filterForm.get("selectedMonths") as FormArray).push(
+        this.formBuilder.control(false)
+      );
+    });
+
+    // Subscribe to form changes
+    this.filterForm.valueChanges.subscribe(() => {
+      this.filterData();
+    });
+
+    // Initial data load
+    this.filterData();
   }
 
   frmSetValue(data: any) {
     if (!data["TypeOfBilling"]) data["TypeOfBilling"] = "";
     if (!data["TypeOfBillingDate"]) data["TypeOfBillingDate"] = "";
 
-    this.frm.setValue(data);
+    this.frm.setValue({ ...data, LeadsToBeBilled: [] });
 
     setTimeout(() => {
       this.onChangeLeadGeneratedBY();
@@ -250,29 +294,109 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
   }
 
   cumulativeMonth: any[] = [];
+  allCumulativeMonth: any[] = [];
   AnnexureCumulativeMonth() {
     this.cumulativeMonth = [];
     const billTo = this.frm.get("CA_Address").value;
     if (billTo && billTo.trim() !== "") {
-      this.service.AnnexureCumulativeMonth(billTo).subscribe((res) => {
+      this.service.AnnexureCumulativeMonth(billTo).subscribe((res: any) => {
         if (res) {
-          this.cumulativeMonth = res as any[];
-          if (this.frm.get("TypeOfBilling").value !== "CumulativeMonthly") {
-            this.cumulativeMonth = this.cumulativeMonth.filter(item => item.Lead_no === this.frm.get("Lead_no").value);
-          }
+          res = res.map((item) => {
+            return {
+              ...item,
+              selected: false,
+            };
+          });
+          this.cumulativeMonth = this.allCumulativeMonth = res as any[];
 
-          const month = new Date(this.frm.get("TypeOfBillingDate").value).getMonth();
-          const year = new Date(this.frm.get("TypeOfBillingDate").value).getFullYear();
+          if (this.frm.get("TypeOfBilling").value == "CumulativeMonthly") {
+            this.avlYears = [
+              ...new Set(
+                this.cumulativeMonth.map((c) =>
+                  new Date(c.Lead_date).getFullYear()
+                )
+              ),
+            ].sort();
+          } else {
+            this.cumulativeMonth = this.cumulativeMonth.filter(
+              (item) => item.Lead_no === this.frm.get("Lead_no").value
+            );
+          }
+          const month = new Date(
+            this.frm.get("TypeOfBillingDate").value
+          ).getMonth();
+          const year = new Date(
+            this.frm.get("TypeOfBillingDate").value
+          ).getFullYear();
           this.cumulativeMonth = this.cumulativeMonth.filter(
             (el) =>
               new Date(el.AGMT_Start_Date).getMonth() == month &&
               new Date(el.AGMT_Start_Date).getFullYear() == year
-          )
+          );
           this.cumulativeMonth = this.cumulativeMonth.sort((a, b) => {
-            return new Date(a.AGMT_Start_Date).valueOf() - new Date(b.AGMT_Start_Date).valueOf() || a.Lead_no - b.Lead_no;
+            return (
+              new Date(a.AGMT_Start_Date).valueOf() -
+                new Date(b.AGMT_Start_Date).valueOf() || a.Lead_no - b.Lead_no
+            );
           });
-        };
+          if (this.frm.get("TypeOfBilling").value == "CumulativeMonthly") {
+            this.cumulativeMonth.forEach((item) => {
+              this.updateSelected(item);
+            });
+          }
+          this.filteredData = this.cumulativeMonth;
+        }
       });
     }
+  }
+
+  get monthsFormArray() {
+    return this.filterForm.get("selectedMonths") as FormArray;
+  }
+
+  getMonthNumber(monthName: string): number {
+    return this.avlMonths.indexOf(monthName) + 1;
+  }
+
+  filteredData = [];
+  filterData() {
+    const selectedYear = this.filterForm.get("selectedYear")?.value;
+    const selectedMonths = this.monthsFormArray.controls
+      .map((control, index) => (control.value ? this.avlMonths[index] : null))
+      .filter((month) => month !== null);
+
+    if (selectedMonths.length === 0 && selectedYear == "-1") {
+      this.filteredData = this.cumulativeMonth;
+      return;
+    }
+
+    this.filteredData = this.allCumulativeMonth.filter((item) => {
+      const leadDate = new Date(item.Lead_date);
+
+      if (selectedMonths.length > 0) {
+        return selectedMonths.some((month) => {
+          const monthNum = this.getMonthNumber(month!);
+          const startMonth = leadDate.getMonth() + 1;
+          const startYear = leadDate.getFullYear().toString();
+
+          return selectedYear !== "-1"
+            ? monthNum === startMonth && selectedYear === startYear
+            : monthNum === startMonth;
+        });
+      } else {
+        return selectedYear === leadDate.getFullYear().toString();
+      }
+    });
+  }
+
+  updateSelected(cate: any) {
+    let leadsSelected = this.frm.get("LeadsToBeBilled").value;
+    cate.selected = !cate.selected;
+    if (cate.selected) {
+      leadsSelected.push(cate.Lead_no);
+    } else {
+      leadsSelected = leadsSelected.filter((f) => f !== cate.Lead_no);
+    }
+    this.frm.get("LeadsToBeBilled").setValue(leadsSelected);
   }
 }

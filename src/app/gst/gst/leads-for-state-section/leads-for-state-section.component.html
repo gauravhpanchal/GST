@@ -160,11 +160,21 @@
 
       <div class="col col-xs-6 col-sm-6 col-lg-6" *ngIf="siteInfo">
         <label>City </label>
-        <input type="text" class="form-control" readonly [value]="siteInfo?.City" />
+        <input
+          type="text"
+          class="form-control"
+          readonly
+          [value]="siteInfo?.City"
+        />
       </div>
       <div class="col col-xs-6 col-sm-6 col-lg-6" *ngIf="siteInfo">
-          <label>Pincode </label>
-          <input type="text" class="form-control" readonly [value]="siteInfo?.Pincode" />
+        <label>Pincode </label>
+        <input
+          type="text"
+          class="form-control"
+          readonly
+          [value]="siteInfo?.Pincode"
+        />
       </div>
 
       <div class="col col-xs-6 col-sm-6 col-lg-6">
@@ -591,11 +601,7 @@
 
       <div class="col col-xs-6 col-sm-6 col-lg-6">
         <label>GST DATE</label>
-        <input
-          type="date"
-          placeholder="GST DATE"
-          formControlName="GST_DATE"
-        />
+        <input type="date" placeholder="GST DATE" formControlName="GST_DATE" />
       </div>
 
       <div
@@ -982,8 +988,43 @@
             <div class="col col-12">
               <fieldset>
                 <legend>
-                  <div style="display: inline-flex; width: 100%; height: 10px">
+                  <div
+                    style="
+                      display: flex;
+                      width: 100%;
+                      height: 2rem;
+                      justify-content: space-between;
+                    "
+                  >
                     <div>Annexure Archive</div>
+                    <form
+                      *ngIf="
+                        frm.get('TypeOfBilling').value == 'CumulativeMonthly'
+                      "
+                      [formGroup]="filterForm"
+                    >
+                      <div class="filters">
+                        <div class="months" formArrayName="selectedMonths">
+                          <ng-container
+                            *ngFor="let month of avlMonths; let i = index"
+                          >
+                            <label class="month-checkbox">
+                              <input type="checkbox" [formControlName]="i" />
+                              {{ month }}
+                            </label>
+                          </ng-container>
+                        </div>
+                        <select
+                          formControlName="selectedYear"
+                          class="year-select"
+                        >
+                          <option value="-1"></option>
+                          <option *ngFor="let year of avlYears" [value]="year">
+                            {{ year }}
+                          </option>
+                        </select>
+                      </div>
+                    </form>
                   </div>
                 </legend>
                 <table>
@@ -995,16 +1036,34 @@
                       <th>AGMT Start Date</th>
                       <th>AGMT End Date</th>
                       <th>AGMT Value</th>
+                      <th
+                        *ngIf="
+                          frm.get('TypeOfBilling').value == 'CumulativeMonthly'
+                        "
+                      >
+                        ADD FOR BILLING
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let cate of cumulativeMonth; let i = index">
+                    <tr *ngFor="let cate of filteredData; let i = index">
                       <td>{{ i + 1 }}</td>
                       <td>{{ cate.Lead_no }}</td>
                       <td>{{ cate.Lead_date | date : "dd/MM/yyyy" }}</td>
                       <td>{{ cate.AGMT_Start_Date | date : "dd/MM/yyyy" }}</td>
                       <td>{{ cate.AGMT_End_date | date : "dd/MM/yyyy" }}</td>
                       <td>{{ cate.Value_of_AGMT }}</td>
+                      <td
+                        *ngIf="
+                          frm.get('TypeOfBilling').value == 'CumulativeMonthly'
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          [checked]="cate.selected"
+                          (change)="updateSelected(cate)"
+                        />
+                      </td>
                     </tr>
                   </tbody>
                 </table>
