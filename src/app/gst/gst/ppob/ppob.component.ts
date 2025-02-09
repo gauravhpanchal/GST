@@ -8,10 +8,11 @@ import {
 } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { EmailPattern } from "src/app/shared/utility/constants";
 import { CheckInputIsNumber } from "src/app/shared/utility/utility";
 import { GstService } from "../../gst.service";
+import { filter, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-ppob",
@@ -90,104 +91,97 @@ export class PPOBComponent implements OnInit, OnDestroy {
       ckkNameAsSite: [""],
     });
 
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      if (data.type === "sendData") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
+    this.service.sendDataSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (data.type === "sendData") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
 
-        if (obj[this.tabID]) {
-          this.frm.setValue(obj[this.tabID]);
-          if (obj[this.tabID].AGNTUpload) {
-            this.AGNTFileDetails = obj[this.tabID].AGNTUpload;
+          if (obj[this.tabID]) {
+            this.frm.setValue(obj[this.tabID]);
+            if (obj[this.tabID].AGNTUpload) {
+              this.AGNTFileDetails = obj[this.tabID].AGNTUpload;
+            }
+            if (obj[this.tabID].ckkNameAsSite) {
+              this.NameAsSiteList = obj[this.tabID].ckkNameAsSite;
+            }
           }
-          if (obj[this.tabID].ckkNameAsSite) {
-            this.NameAsSiteList = obj[this.tabID].ckkNameAsSite;
-          }
-        }
 
-        this.setValue(obj);
-      } else if (data.type === "TabChanged") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        this.setValue(obj);
-        this.Data = obj;
-        this.isNameAsSiteAvalable =
-          this.Data &&
-          this.Data.LeadsForStateSection &&
-          this.Data.LeadsForStateSection.NameAsSite.trim() != "" &&
-          this.Data.LeadsForStateSection.NameAsSite.trim() != "-1"
-            ? true
-            : false;
-        if (this.isNameAsSiteAvalable) {
-          const CA_Address = this.service.GetSiteAddressBySiteID(
-            this.Data.LeadsForStateSection.NameAsSite
-          );
-          if (CA_Address) {
-            this.PERPOPULATED_Fields(
-              "DoorNoPremisesNo",
-              CA_Address.DoorNoPremisesNo
-            );
-            this.PERPOPULATED_Fields("FloorNo", CA_Address.FloorNo);
-            this.PERPOPULATED_Fields(
-              "BuildingPremiseName",
-              CA_Address.BuildingPremiseName
-            );
-            this.PERPOPULATED_Fields(
-              "AreaStreetRoadName",
-              CA_Address.AreaStreetRoadName
-            );
-            this.PERPOPULATED_Fields(
-              "SubLocalityLocality",
-              CA_Address.SubLocalityLocality
-            );
-            this.PERPOPULATED_Fields(
-              "City",
-              CA_Address.City
-            );
-            this.PERPOPULATED_Fields(
-              "Pincode",
-              CA_Address.Pincode
-            );
-            this.PERPOPULATED_Fields(
-              "State",
-              CA_Address.States
-            );
-
-            const NameAsSiteList = this.service.GetSiteCodeBySiteID(
+          this.setValue(obj);
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          this.setValue(obj);
+          this.Data = obj;
+          this.isNameAsSiteAvalable =
+            this.Data &&
+            this.Data.LeadsForStateSection &&
+            this.Data.LeadsForStateSection.NameAsSite.trim() != "" &&
+            this.Data.LeadsForStateSection.NameAsSite.trim() != "-1"
+              ? true
+              : false;
+          if (this.isNameAsSiteAvalable) {
+            const CA_Address = this.service.GetSiteAddressBySiteID(
               this.Data.LeadsForStateSection.NameAsSite
             );
-            if (
-              NameAsSiteList.length != this.NameAsSiteList.length ||
-              (this.NameAsSiteList.length > 0 &&
-                NameAsSiteList.length > 0 &&
-                this.NameAsSiteList[0].text !== NameAsSiteList[0].text)
-            ) {
-              this.frm.get("ckkNameAsSite").setValue(NameAsSiteList);
-              this.NameAsSiteList = NameAsSiteList;
-            }
-            //  this.frm.get('ckkNameAsSite').setValue(this.Data.LeadsForStateSection.NameAsSite);
-          }
-        }
-        if (data.oldTabID === this.tabID) {
-          this.sendData.emit({ type: "updateData", data: this.frm.value });
-        }
+            if (CA_Address) {
+              this.PERPOPULATED_Fields(
+                "DoorNoPremisesNo",
+                CA_Address.DoorNoPremisesNo
+              );
+              this.PERPOPULATED_Fields("FloorNo", CA_Address.FloorNo);
+              this.PERPOPULATED_Fields(
+                "BuildingPremiseName",
+                CA_Address.BuildingPremiseName
+              );
+              this.PERPOPULATED_Fields(
+                "AreaStreetRoadName",
+                CA_Address.AreaStreetRoadName
+              );
+              this.PERPOPULATED_Fields(
+                "SubLocalityLocality",
+                CA_Address.SubLocalityLocality
+              );
+              this.PERPOPULATED_Fields("City", CA_Address.City);
+              this.PERPOPULATED_Fields("Pincode", CA_Address.Pincode);
+              this.PERPOPULATED_Fields("State", CA_Address.States);
 
-        const Contact_Number =
-          obj && obj.Individual && obj.Individual.length > 0
-            ? obj.Individual[0].Contact_Number
-            : null;
-        const EmailId =
-          obj && obj.Individual && obj.Individual.length > 0
-            ? obj.Individual[0].Email_Id
-            : null;
-        this.PERPOPULATED_Fields("EmailId", EmailId);
-        this.PERPOPULATED_Fields("ContactNumber", Contact_Number);
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        const data = { ...this.frm.value };
-        this.frm.reset();
-        this.frm.setValue(data);
-      }
-    });
+              const NameAsSiteList = this.service.GetSiteCodeBySiteID(
+                this.Data.LeadsForStateSection.NameAsSite
+              );
+              if (
+                NameAsSiteList.length != this.NameAsSiteList.length ||
+                (this.NameAsSiteList.length > 0 &&
+                  NameAsSiteList.length > 0 &&
+                  this.NameAsSiteList[0].text !== NameAsSiteList[0].text)
+              ) {
+                this.frm.get("ckkNameAsSite").setValue(NameAsSiteList);
+                this.NameAsSiteList = NameAsSiteList;
+              }
+              //  this.frm.get('ckkNameAsSite').setValue(this.Data.LeadsForStateSection.NameAsSite);
+            }
+          }
+          if (data.oldTabID === this.tabID || !data.oldTabID) {
+            this.sendData.emit({ type: "updateData", data: this.frm.value });
+          }
+
+          const Contact_Number =
+            obj && obj.Individual && obj.Individual.length > 0
+              ? obj.Individual[0].Contact_Number
+              : null;
+          const EmailId =
+            obj && obj.Individual && obj.Individual.length > 0
+              ? obj.Individual[0].Email_Id
+              : null;
+          this.PERPOPULATED_Fields("EmailId", EmailId);
+          this.PERPOPULATED_Fields("ContactNumber", Contact_Number);
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          const data = { ...this.frm.value };
+          this.frm.reset();
+          this.frm.setValue(data);
+        }
+      });
   }
 
   setValue(data: any) {
@@ -209,14 +203,16 @@ export class PPOBComponent implements OnInit, OnDestroy {
   PERPOPULATED_Fields(field: string, newValue: string) {
     const val = this.frm.get(field).value;
     // if (!val || (val === null && val.trim() === "")) {
-      // if (newValue) {
-        this.frm.get(field).setValue(newValue);        
-      // }
+    // if (newValue) {
+    this.frm.get(field).setValue(newValue);
+    // }
     // }
   }
-  subscription: Subscription;
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onSubmit() {

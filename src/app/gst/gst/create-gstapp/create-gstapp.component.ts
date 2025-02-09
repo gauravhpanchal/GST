@@ -10,11 +10,12 @@ import {
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { CheckInputIsNumber } from "src/app/shared/utility/utility";
 import { GstService } from "../../gst.service";
 import { v4 as uuidv4 } from "uuid";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
+import { takeUntil } from "rxjs/operators";
 
 // https://www.gstzen.in/a/form-gst-reg-01.html
 @Component({
@@ -359,61 +360,67 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
         NatureOfPossessionOfPremises: [""],
       }),
     });
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      if (data.type === "sendData") {
-        const obj = data.obj;
+    this.service.sendDataSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (data.type === "sendData") {
+          const obj = data.obj;
 
-        if (Object.keys(obj).length > 0) {
-          this.SetData(obj);
+          if (Object.keys(obj).length > 0) {
+            this.SetData(obj);
+          }
+          if (obj[this.tabID] && obj[this.tabID].GST_Details) {
+            this.GST_Details = obj[this.tabID].GST_Details;
+          }
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+
+          if (
+            obj.LeadsForStateSection &&
+            (obj.LeadsForStateSection.HOME_STATE_GST_NO ||
+              obj.LeadsForStateSection.GST_State)
+          ) {
+            const gstData = this.frm.get("GST_Details").value || [];
+            const homeStateGstData = {
+              GST_Date: obj.LeadsForStateSection.GST_DATE,
+              GST_Number: obj.LeadsForStateSection.HOME_STATE_GST_NO,
+              GST_State: obj.LeadsForStateSection.GST_State,
+              GST_Status:
+                obj.LeadsForStateSection.GTS_Status != "-1"
+                  ? obj.LeadsForStateSection.GTS_Status
+                  : "",
+            };
+            const otherStateGstData = gstData.filter(
+              (el) =>
+                el.GST_State != obj.LeadsForStateSection.GST_State &&
+                el.GST_Number != obj.LeadsForStateSection.HOME_STATE_GST_NO
+            );
+
+            this.frm
+              .get("GST_Details")
+              .setValue([homeStateGstData, ...otherStateGstData]);
+            this.GST_Details = [homeStateGstData, ...otherStateGstData];
+          }
+
+          if (Object.keys(obj).length > 0) {
+            this.SetData(obj);
+          }
+
+          // if (data.oldTabID === this.tabID) {
+          //   this.sendData.emit({ type: 'updateData', data: this.frm.value });
+          // }
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          // const data = { ...this.frm.value };
+          // this.frm.reset();
+          // this.frm.setValue(data);
         }
-        if (obj[this.tabID] && obj[this.tabID].GST_Details) {
-          this.GST_Details = obj[this.tabID].GST_Details;
-        }
-      } else if (data.type === "TabChanged") {
-        const obj = data.obj;
-
-        if (
-          obj.LeadsForStateSection &&
-          (obj.LeadsForStateSection.HOME_STATE_GST_NO ||
-            obj.LeadsForStateSection.GST_State)
-        ) {
-          const gstData = this.frm.get("GST_Details").value || [];
-          const homeStateGstData = {
-            GST_Date: obj.LeadsForStateSection.GST_DATE,
-            GST_Number: obj.LeadsForStateSection.HOME_STATE_GST_NO,
-            GST_State: obj.LeadsForStateSection.GST_State,
-            GST_Status: obj.LeadsForStateSection.GTS_Status != '-1' ? obj.LeadsForStateSection.GTS_Status : ""
-          };
-          const otherStateGstData = gstData.filter(
-            (el) =>
-              el.GST_State != obj.LeadsForStateSection.GST_State &&
-              el.GST_Number != obj.LeadsForStateSection.HOME_STATE_GST_NO
-          );
-
-          this.frm
-            .get("GST_Details")
-            .setValue([homeStateGstData, ...otherStateGstData]);
-          this.GST_Details = [homeStateGstData, ...otherStateGstData]
-        }
-
-        if (Object.keys(obj).length > 0) {
-          this.SetData(obj);
-        }
-
-        // if (data.oldTabID === this.tabID) {
-        //   this.sendData.emit({ type: 'updateData', data: this.frm.value });
-        // }
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        // const data = { ...this.frm.value };
-        // this.frm.reset();
-        // this.frm.setValue(data);
-      }
-    });
+      });
   }
 
-  subscription: Subscription;
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onSubmit() {
@@ -432,17 +439,16 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
   // GetValue(obj, Key, Name, subName = '') {
   //   return obj && obj[Key] ? obj[Key][Name] ? obj[Key][Name][subName] && subName !== '' ? obj[Key][Name] : obj[Key][subName] : "";
   // }
-  GetValue(obj, Key, Name, subName = '') {
-    if (!obj || !obj[Key]) return ''; // Return empty string if obj or obj[Key] is undefined
-    if (subName !== '' && obj[Key][Name]) {
+  GetValue(obj, Key, Name, subName = "") {
+    if (!obj || !obj[Key]) return ""; // Return empty string if obj or obj[Key] is undefined
+    if (subName !== "" && obj[Key][Name]) {
       return obj[Key][Name][subName];
     }
     if (obj[Key][Name]) {
       return obj[Key][Name];
     }
-    return '';
+    return "";
   }
-
 
   SetData(obj: any) {
     let frmObj = this.getFrmObject(obj);
@@ -555,8 +561,8 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
   }
 
   download() {
-    this.service.DownloadData(this.frm.value).subscribe(data => {
-      saveAs(data, "HBSE.xlsx")
+    this.service.DownloadData(this.frm.value).subscribe((data) => {
+      saveAs(data, "HBSE.xlsx");
     });
   }
 
@@ -574,14 +580,13 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
       APOB: "APOB",
       ComplainceCheck: "ComplainceCheck",
       Invoice: "Invoice",
-      CreateGSTApp: "CreateGSTApp"
+      CreateGSTApp: "CreateGSTApp",
     };
 
     const CA_Address = this.service.GetSiteAddressBySiteID(
       obj.LeadsForStateSection.NameAsSite
     );
     return {
-
       Additional_Business_Place: this.Additional_Business_Place_Details,
       // Lead_no: this.GetValue(obj, keys.LeadsForStateSection, "val"),
       // Lead_date: this.GetValue(obj, keys.LeadsForStateSection, "val"),
@@ -663,8 +668,18 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
           "LeadGeneratedForState"
         ),
         Jurisdiction: this.GetValue(obj, keys.PPOB, "GSTJurisdiction"),
-        Ward_No: this.GetValue(obj, keys.CreateGSTApp, 'Business_Details', 'Ward_No'),
-        Commisionerate_Code: this.GetValue(obj, keys.CreateGSTApp, 'Business_Details', 'Commisionerate_Code'),
+        Ward_No: this.GetValue(
+          obj,
+          keys.CreateGSTApp,
+          "Business_Details",
+          "Ward_No"
+        ),
+        Commisionerate_Code: this.GetValue(
+          obj,
+          keys.CreateGSTApp,
+          "Business_Details",
+          "Commisionerate_Code"
+        ),
         Division_Code: this.GetValue(obj, keys.PPOB, "Division"),
         Range_Code: this.GetValue(obj, keys.PPOB, "Range"),
         Composition_Option: this.GetValue(
@@ -672,29 +687,52 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
           keys.Organisation,
           "Composite_Seller"
         ),
-        Commencement_Date: this.GetValue(obj, keys.CreateGSTApp, 'Business_Details', 'Commencement_Date') || this.getDate(),
-        Register_Arises_Date: this.GetValue(obj, keys.CreateGSTApp, 'Business_Details', 'Register_Arises_Date') || this.getDate(),
-        Reason_Reg: this.GetValue(obj, keys.CreateGSTApp, 'Business_Details', "Reason_Reg"),
+        Commencement_Date:
+          this.GetValue(
+            obj,
+            keys.CreateGSTApp,
+            "Business_Details",
+            "Commencement_Date"
+          ) || this.getDate(),
+        Register_Arises_Date:
+          this.GetValue(
+            obj,
+            keys.CreateGSTApp,
+            "Business_Details",
+            "Register_Arises_Date"
+          ) || this.getDate(),
+        Reason_Reg: this.GetValue(
+          obj,
+          keys.CreateGSTApp,
+          "Business_Details",
+          "Reason_Reg"
+        ),
         // Casual_Tax_Option: this.GetValue(obj, keys.LeadsForStateSection, "val"),
-        Casual_Tax_Option: this.GetValue(obj, keys.CreateGSTApp, 'Business_Details', 'Casual_Tax_Option'),
+        Casual_Tax_Option: this.GetValue(
+          obj,
+          keys.CreateGSTApp,
+          "Business_Details",
+          "Casual_Tax_Option"
+        ),
         Registration_Type: this.GetValue(
           obj,
           keys.CreateGSTApp,
-          'Business_Details',
+          "Business_Details",
           "Registration_Type"
         ),
         License_Date: this.GetValue(
           obj,
           keys.CreateGSTApp,
-          'Business_Details',
+          "Business_Details",
           "License_Date"
         ),
-        License_Number: this.GetValue(
-          obj,
-          keys.CreateGSTApp,
-          'Business_Details',
-          "License_Number"
-        ) || '',
+        License_Number:
+          this.GetValue(
+            obj,
+            keys.CreateGSTApp,
+            "Business_Details",
+            "License_Number"
+          ) || "",
         Registration_Number: this.getRegistrationDetails(
           this.GetValue(obj, keys.Organisation, "GST_Details"),
           "GST_Number"
@@ -816,7 +854,8 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
         //   FAX_No: this.GetValue(obj, keys.LeadsForStateSection, "val"),
         //   NatureOfProcess: this.GetValue(obj, keys.LeadsForStateSection, "val"),
       },
-      Business_Activity: this.GetValue(obj, keys.CreateGSTApp, "Business_Activity") || "-1",
+      Business_Activity:
+        this.GetValue(obj, keys.CreateGSTApp, "Business_Activity") || "-1",
       // Additional_Business_Place: {
       //   DoorNoPremisesNo: this.GetValue(obj, keys.LeadsForStateSection, "val"),
       //   FloorNo: this.GetValue(obj, keys.LeadsForStateSection, "val"),
@@ -856,11 +895,9 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
       //       "NatureOfPossessionOfPremises"
       //     ) || "-1",
       // },
-      NatureOfPossessionOfPremises: this.GetValue(
-        obj,
-        keys.CreateGSTApp,
-        "NatureOfPossessionOfPremises"
-      ) || "-1",
+      NatureOfPossessionOfPremises:
+        this.GetValue(obj, keys.CreateGSTApp, "NatureOfPossessionOfPremises") ||
+        "-1",
 
       Commodity_Supply: this.getCommodity_SupplyDetails(
         this.GetValue(obj, keys.Organisation, "Product_HSN_number_Items"),
@@ -875,8 +912,18 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
       State_Spec_Info: {
         ProTaxECNo: this.GetValue(obj, keys.Organisation, "PT_Details"),
         ProTaxRCNo: this.GetValue(obj, keys.Organisation, "PTREC_Details"),
-        PersonName: this.GetValue(obj, keys.CreateGSTApp, "State_Spec_Info", "PersonName"),
-        StateLic_No: this.GetValue(obj, keys.CreateGSTApp, "State_Spec_Info", "StateLic_No"),
+        PersonName: this.GetValue(
+          obj,
+          keys.CreateGSTApp,
+          "State_Spec_Info",
+          "PersonName"
+        ),
+        StateLic_No: this.GetValue(
+          obj,
+          keys.CreateGSTApp,
+          "State_Spec_Info",
+          "StateLic_No"
+        ),
       },
     };
   }
@@ -933,7 +980,8 @@ export class CreateGSTAppComponent implements OnInit, OnDestroy {
             MobileNo: item.Contact_Number,
             EmailID: item.Email_Id,
             Gender: item.Gender,
-            GenderTelephoneNoWithStdCode: item.GenderTelephoneNoWithStdCode || "",
+            GenderTelephoneNoWithStdCode:
+              item.GenderTelephoneNoWithStdCode || "",
             FaxNumberWithSTDCode: item.FaxNumberWithSTDCode || "",
           },
           IdentityInformation: {

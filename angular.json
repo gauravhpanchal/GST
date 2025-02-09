@@ -24,10 +24,7 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "buildOptimizer": true,
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "sourceMap": true,
             "styles": [
               "node_modules/medium-editor/dist/css/medium-editor.min.css",
@@ -35,7 +32,9 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
-            "scripts": ["./node_modules/medium-editor/dist/js/medium-editor.min.js"],
+            "scripts": [
+              "./node_modules/medium-editor/dist/js/medium-editor.min.js"
+            ],
             "allowedCommonJsDependencies": ["core-js"]
           },
           "configurations": {
@@ -47,9 +46,9 @@
                 }
               ],
               "optimization": {
-                  "scripts": true,
-                  "styles": true,
-                  "fonts": false
+                "scripts": true,
+                "styles": true,
+                "fonts": false
               },
               "outputHashing": "all",
               "sourceMap": true,
@@ -69,19 +68,25 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "travelGuruAdmin:build"
-          },
           "configurations": {
             "production": {
               "browserTarget": "travelGuruAdmin:build:production"
+            },
+            "development": {
+              "browserTarget": "travelGuruAdmin:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -96,13 +101,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         },
@@ -114,9 +114,7 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {

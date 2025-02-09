@@ -7,14 +7,29 @@ import {
   Output,
   ChangeDetectorRef,
 } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormArray,
+  FormControl,
+} from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { GstService } from "../../gst.service";
 import {
   CheckInputIsNumber,
   amountToWords,
 } from "src/app/shared/utility/utility";
+import { takeUntil } from "rxjs/operators";
+
+interface LineItemForLead {
+  Lead_no: string;
+  Group: number;
+  Description: string;
+  Discount: number | null;
+  Discount_Amount: number | null;
+}
 
 @Component({
   selector: "app-invoice",
@@ -45,6 +60,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   ];
   yesNoOption: any[] = ["Yes", "No"];
   isInvoiceForCA = true;
+
   constructor(
     private formBuilder: FormBuilder,
     private route: Router,
@@ -58,6 +74,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
       Invoice_Number: [""],
       Invoice_Date: [""],
       Buyer_Ref_Number: [""],
+      Annextures: new FormGroup({}),
       Seller_Details: this.formBuilder.group({
         Business_Name: [""],
         Address1: [""],
@@ -96,300 +113,319 @@ export class InvoiceComponent implements OnInit, OnDestroy {
       }),
     });
 
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      if (
-        ["CA-1", "CA-2", "CA-3", "CA-4", "CA-5", "CA-6"].includes(
-          data.obj?.LeadsForStateSection?.CA_Address
-        )
-      ) {
-        this.isInvoiceForCA = true;
-      } else {
-        this.isInvoiceForCA = false;
-      }
-
-      if (data.type === "sendData") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        if (obj[this.tabID]) this.frm.setValue(obj[this.tabID]);
-      } else if (data.type === "TabChanged") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
+    this.service.sendDataSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
         if (
-          obj.LeadsForStateSection &&
-          obj.LeadsForStateSection.CA_Address &&
-          obj.LeadsForStateSection.CA_Address.trim() !== ""
+          ["CA-1", "CA-2", "CA-3", "CA-4", "CA-5", "CA-6"].includes(
+            data.obj?.LeadsForStateSection?.CA_Address
+          )
         ) {
-          this.service
-            .AnnexureCumulativeMonth(obj.LeadsForStateSection.CA_Address)
-            .subscribe((res) => {
-              if (res) {
-                this.cumulativeMonth = res as any[];
-                if (
-                  obj.LeadsForStateSection.TypeOfBilling !== "CumulativeMonthly"
-                ) {
-                  this.cumulativeMonth = this.cumulativeMonth.filter(
-                    (item) => item.Lead_no === obj.LeadsForStateSection.Lead_no
-                  );
-                } else {
-                  if (obj.LeadsForStateSection.LeadsToBeBilled) {
-                    this.cumulativeMonth = this.cumulativeMonth.filter((item) =>
-                      obj.LeadsForStateSection.LeadsToBeBilled?.includes(
-                        item.Lead_no
-                      )
+          this.isInvoiceForCA = true;
+        } else {
+          this.isInvoiceForCA = false;
+        }
+
+        if (data.type === "sendData") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          if (obj[this.tabID]) this.frm.setValue(obj[this.tabID]);
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          if (
+            obj.LeadsForStateSection &&
+            obj.LeadsForStateSection.CA_Address &&
+            obj.LeadsForStateSection.CA_Address.trim() !== ""
+          ) {
+            this.service
+              .AnnexureCumulativeMonth(obj.LeadsForStateSection.CA_Address)
+              // .pipe(takeUntil(this.destroy$))
+              .subscribe((res) => {
+                if (res) {
+                  this.cumulativeMonth = res as any[];
+                  if (
+                    obj.LeadsForStateSection.TypeOfBilling !==
+                    "CumulativeMonthly"
+                  ) {
+                    this.cumulativeMonth = this.cumulativeMonth.filter(
+                      (item) =>
+                        item.Lead_no === obj.LeadsForStateSection.Lead_no
                     );
                   } else {
-                    const month = new Date(
-                      obj.LeadsForStateSection.TypeOfBillingDate
-                    ).getMonth();
-                    const year = new Date(
-                      obj.LeadsForStateSection.TypeOfBillingDate
-                    ).getFullYear();
-                    this.cumulativeMonth = this.cumulativeMonth.filter(
-                      (el) =>
-                        new Date(el.AGMT_Start_Date).getMonth() == month &&
-                        new Date(el.AGMT_Start_Date).getFullYear() == year
+                    if (obj.LeadsForStateSection.LeadsToBeBilled) {
+                      this.cumulativeMonth = this.cumulativeMonth.filter(
+                        (item) =>
+                          obj.LeadsForStateSection.LeadsToBeBilled.includes(
+                            item.Lead_no
+                          )
+                      );
+                    } else {
+                      const month = new Date(
+                        obj.LeadsForStateSection.TypeOfBillingDate
+                      ).getMonth();
+                      const year = new Date(
+                        obj.LeadsForStateSection.TypeOfBillingDate
+                      ).getFullYear();
+                      this.cumulativeMonth = this.cumulativeMonth.filter(
+                        (el) =>
+                          new Date(el.AGMT_Start_Date).getMonth() == month &&
+                          new Date(el.AGMT_Start_Date).getFullYear() == year
+                      );
+                    }
+                  }
+                  this.cumulativeMonth = this.cumulativeMonth.reduce(function (
+                    r,
+                    a
+                  ) {
+                    r[a.Value_of_AGMT] = r[a.Value_of_AGMT] || {
+                      data: [],
+                      records_count: 0,
+                    };
+                    r[a.Value_of_AGMT].data.push(a);
+                    r[a.Value_of_AGMT].lead_no = r[a.Value_of_AGMT].data
+                      .map((el) => el.Lead_no)
+                      .join(", ");
+                    r[a.Value_of_AGMT].records_count =
+                      r[a.Value_of_AGMT].data.length;
+                    if (obj && obj.Invoice && obj.Invoice.Buyer_Details) {
+                      r[a.Value_of_AGMT].discount =
+                        obj.Invoice.Buyer_Details.Discount;
+                    }
+                    if (obj?.Invoice?.Buyer_Details) {
+                      const discount = obj.Invoice.Buyer_Details.Discount;
+                      const valueOfAGMT = Number.isNaN(
+                        parseInt(a.Value_of_AGMT)
+                      )
+                        ? 0
+                        : parseInt(a.Value_of_AGMT);
+                      const length = r[a.Value_of_AGMT]?.data?.length || 0;
+
+                      r[a.Value_of_AGMT].discount_amount =
+                        (valueOfAGMT * length * discount) / 100;
+                      r[a.Value_of_AGMT].discount_total =
+                        (valueOfAGMT * length * discount) / 100;
+                      r[a.Value_of_AGMT].total_amount = valueOfAGMT * length;
+                    }
+                    r[a.Value_of_AGMT].hsn_code = "";
+                    r[a.Value_of_AGMT].description = "";
+
+                    return r;
+                  },
+                  Object.create(null));
+                  let cumulativeKeys = Object.keys(this.cumulativeMonth);
+                  this.cumulativeMonthCount = cumulativeKeys.length;
+                  cumulativeKeys.forEach((el) => {
+                    (this.frm.get("Annextures") as FormGroup).addControl(
+                      this.cumulativeMonth[el].lead_no,
+                      this.formBuilder.array([])
                     );
-                  }
+                  });
+                  this.setTotalAmount();
                 }
-                this.cumulativeMonth = this.cumulativeMonth.reduce(function (
-                  r,
-                  a
-                ) {
-                  r[a.Value_of_AGMT] = r[a.Value_of_AGMT] || {
-                    data: [],
-                    records_count: 0,
-                  };
-                  r[a.Value_of_AGMT].data.push(a);
-                  r[a.Value_of_AGMT].lead_no = r[a.Value_of_AGMT].data
-                    .map((el) => el.Lead_no)
-                    .join(", ");
-                  r[a.Value_of_AGMT].records_count =
-                    r[a.Value_of_AGMT].data.length;
-                  if (obj && obj.Invoice && obj.Invoice.Buyer_Details) {
-                    r[a.Value_of_AGMT].discount =
-                      obj.Invoice.Buyer_Details.Discount;
-                  }
-                  if (obj?.Invoice?.Buyer_Details) {
-                    const discount = obj.Invoice.Buyer_Details.Discount;
-                    const valueOfAGMT = Number.isNaN(parseInt(a.Value_of_AGMT))
-                      ? 0
-                      : parseInt(a.Value_of_AGMT);
-                    const length = r[a.Value_of_AGMT]?.data?.length || 0;
-
-                    r[a.Value_of_AGMT].discount_amount =
-                      (valueOfAGMT * length * discount) / 100;
-                    r[a.Value_of_AGMT].discount_total =
-                      (valueOfAGMT * length * discount) / 100;
-                    r[a.Value_of_AGMT].total_amount = valueOfAGMT * length;
-                  }
-                  r[a.Value_of_AGMT].hsn_code = "";
-                  r[a.Value_of_AGMT].description = "";
-
-                  return r;
-                },
-                Object.create(null));
-                this.cumulativeMonthCount = Object.keys(
-                  this.cumulativeMonth
-                ).length;
-                this.setTotalAmount();
-              }
-            });
-        }
-        const isBillToSelected =
-          obj &&
-          obj.LeadsForStateSection &&
-          obj.LeadsForStateSection.NameAsSite.trim() != "" &&
-          obj.LeadsForStateSection.NameAsSite.trim() != "-1"
-            ? true
-            : false;
-        const isSellerDetailsSelected =
-          obj &&
-          obj.LeadsForStateSection &&
-          obj.LeadsForStateSection.CA_Address.trim() != "" &&
-          obj.LeadsForStateSection.CA_Address.trim() != "-1"
-            ? true
-            : false;
-
-        let billToDetail;
-        if (
-          isBillToSelected &&
-          obj.LeadsForStateSection.CA_Address !== "OTHERS"
-        ) {
-          billToDetail = this.service.GetBillToAddressByCA_CODES(
-            obj.LeadsForStateSection.CA_Address
-          );
-        } else {
-          billToDetail = obj.Invoice.Buyer_Details;
-        }
-
-        if (billToDetail && obj.LeadsForStateSection.CA_Address !== "OTHERS") {
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "Business_Name",
-            billToDetail.CA_NAME || billToDetail.Business_Name
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "Address1",
-            billToDetail.ADDRESS1 || billToDetail.Address1
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "Address2",
-            billToDetail.ADDRESS2 || billToDetail.Address2
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "Address3",
-            billToDetail.ADDRESS3 || billToDetail.Address3
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "State",
-            billToDetail.STATE || billToDetail.State
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "State_Code",
-            billToDetail.STATE_CODE || billToDetail.State_Code
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "GST_No",
-            billToDetail.GSTN || billToDetail.GST_No
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "PAN_No",
-            billToDetail.PAN_NO || billToDetail.PAN_No
-          );
-          if (obj && obj.Invoice && obj.Invoice?.Buyer_Details) {
-            this.PERPOPULATED_Fields(
-              "Buyer_Details",
-              "Discount",
-              obj.Invoice.Buyer_Details.Discount
-            );
+              });
           }
-        } else {
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "Business_Name",
-            billToDetail.Business_Name
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "Address1",
-            billToDetail.Address1
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "Address2",
-            billToDetail.Address2
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "Address3",
-            billToDetail.Address3
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "State",
-            billToDetail.State
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "State_Code",
-            billToDetail.State_Code
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "GST_No",
-            billToDetail.GST_No
-          );
-          this.PERPOPULATED_Fields(
-            "Buyer_Details",
-            "PAN_No",
-            billToDetail.PAN_No
-          );
-          if (obj && obj.Invoice && obj.Invoice?.Buyer_Details) {
-            this.PERPOPULATED_Fields(
-              "Buyer_Details",
-              "Discount",
-              obj.Invoice.Buyer_Details.Discount
+          const isBillToSelected =
+            obj &&
+            obj.LeadsForStateSection &&
+            obj.LeadsForStateSection.NameAsSite.trim() != "" &&
+            obj.LeadsForStateSection.NameAsSite.trim() != "-1"
+              ? true
+              : false;
+          const isSellerDetailsSelected =
+            obj &&
+            obj.LeadsForStateSection &&
+            obj.LeadsForStateSection.CA_Address.trim() != "" &&
+            obj.LeadsForStateSection.CA_Address.trim() != "-1"
+              ? true
+              : false;
+
+          let billToDetail;
+          if (
+            isBillToSelected &&
+            obj.LeadsForStateSection.CA_Address !== "OTHERS"
+          ) {
+            billToDetail = this.service.GetBillToAddressByCA_CODES(
+              obj.LeadsForStateSection.CA_Address
             );
           } else {
-            this.PERPOPULATED_Fields("Buyer_Details", "Discount", "");
+            billToDetail = obj.Invoice.Buyer_Details;
           }
-        }
 
-        if (isSellerDetailsSelected) {
-          let NameAsSite = obj.LeadsForStateSection.NameAsSite;
-
-          if (obj.LeadsForStateSection.NameAsSite == "KA2") {
-            NameAsSite = "KA1";
-          }
-          if (obj.LeadsForStateSection.NameAsSite == "MH2") {
-            NameAsSite = "MH1";
-          }
-          const SellerDetail = this.service.GetSiteAddressBySiteID(NameAsSite);
-          if (SellerDetail) {
-            let address2 = SellerDetail.FloorNo;
-            address2 += SellerDetail.BuildingPremiseName
-              ? ", " + SellerDetail.BuildingPremiseName
-              : "";
-
-            let address3 = SellerDetail.AreaStreetRoadName;
-            address3 += SellerDetail.SubLocalityLocality
-              ? ", " + SellerDetail.SubLocalityLocality
-              : "";
-
+          if (
+            billToDetail &&
+            obj.LeadsForStateSection.CA_Address !== "OTHERS"
+          ) {
             this.PERPOPULATED_Fields(
-              "Seller_Details",
+              "Buyer_Details",
               "Business_Name",
-              SellerDetail.BUSINESS_NAME
+              billToDetail.CA_NAME || billToDetail.Business_Name
             );
             this.PERPOPULATED_Fields(
-              "Seller_Details",
-              "GST_No",
-              SellerDetail.GSTN
-            );
-            this.PERPOPULATED_Fields(
-              "Seller_Details",
+              "Buyer_Details",
               "Address1",
-              SellerDetail.DoorNoPremisesNo
+              billToDetail.ADDRESS1 || billToDetail.Address1
             );
-            this.PERPOPULATED_Fields("Seller_Details", "Address2", address2);
-            this.PERPOPULATED_Fields("Seller_Details", "Address3", address3);
             this.PERPOPULATED_Fields(
-              "Seller_Details",
+              "Buyer_Details",
+              "Address2",
+              billToDetail.ADDRESS2 || billToDetail.Address2
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "Address3",
+              billToDetail.ADDRESS3 || billToDetail.Address3
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
               "State",
-              SellerDetail.States
+              billToDetail.STATE || billToDetail.State
             );
             this.PERPOPULATED_Fields(
-              "Seller_Details",
+              "Buyer_Details",
               "State_Code",
-              SellerDetail.STATE_CODE
+              billToDetail.STATE_CODE || billToDetail.State_Code
             );
             this.PERPOPULATED_Fields(
-              "Seller_Details",
-              "PAN_No",
-              SellerDetail.PAN_NO
+              "Buyer_Details",
+              "GST_No",
+              billToDetail.GSTN || billToDetail.GST_No
             );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "PAN_No",
+              billToDetail.PAN_NO || billToDetail.PAN_No
+            );
+            if (obj && obj.Invoice && obj.Invoice?.Buyer_Details) {
+              this.PERPOPULATED_Fields(
+                "Buyer_Details",
+                "Discount",
+                obj.Invoice.Buyer_Details.Discount
+              );
+            }
+          } else {
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "Business_Name",
+              billToDetail.Business_Name
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "Address1",
+              billToDetail.Address1
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "Address2",
+              billToDetail.Address2
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "Address3",
+              billToDetail.Address3
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "State",
+              billToDetail.State
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "State_Code",
+              billToDetail.State_Code
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "GST_No",
+              billToDetail.GST_No
+            );
+            this.PERPOPULATED_Fields(
+              "Buyer_Details",
+              "PAN_No",
+              billToDetail.PAN_No
+            );
+            if (obj && obj.Invoice && obj.Invoice?.Buyer_Details) {
+              this.PERPOPULATED_Fields(
+                "Buyer_Details",
+                "Discount",
+                obj.Invoice.Buyer_Details.Discount
+              );
+            } else {
+              this.PERPOPULATED_Fields("Buyer_Details", "Discount", "");
+            }
           }
+
+          if (isSellerDetailsSelected) {
+            let NameAsSite = obj.LeadsForStateSection.NameAsSite;
+
+            if (obj.LeadsForStateSection.NameAsSite == "KA2") {
+              NameAsSite = "KA1";
+            }
+            if (obj.LeadsForStateSection.NameAsSite == "MH2") {
+              NameAsSite = "MH1";
+            }
+            const SellerDetail =
+              this.service.GetSiteAddressBySiteID(NameAsSite);
+            if (SellerDetail) {
+              let address2 = SellerDetail.FloorNo;
+              address2 += SellerDetail.BuildingPremiseName
+                ? ", " + SellerDetail.BuildingPremiseName
+                : "";
+
+              let address3 = SellerDetail.AreaStreetRoadName;
+              address3 += SellerDetail.SubLocalityLocality
+                ? ", " + SellerDetail.SubLocalityLocality
+                : "";
+
+              this.PERPOPULATED_Fields(
+                "Seller_Details",
+                "Business_Name",
+                SellerDetail.BUSINESS_NAME
+              );
+              this.PERPOPULATED_Fields(
+                "Seller_Details",
+                "GST_No",
+                SellerDetail.GSTN
+              );
+              this.PERPOPULATED_Fields(
+                "Seller_Details",
+                "Address1",
+                SellerDetail.DoorNoPremisesNo
+              );
+              this.PERPOPULATED_Fields("Seller_Details", "Address2", address2);
+              this.PERPOPULATED_Fields("Seller_Details", "Address3", address3);
+              this.PERPOPULATED_Fields(
+                "Seller_Details",
+                "State",
+                SellerDetail.States
+              );
+              this.PERPOPULATED_Fields(
+                "Seller_Details",
+                "State_Code",
+                SellerDetail.STATE_CODE
+              );
+              this.PERPOPULATED_Fields(
+                "Seller_Details",
+                "PAN_No",
+                SellerDetail.PAN_NO
+              );
+            }
+          }
+          if (data.oldTabID === this.tabID || !data.oldTabID) {
+            this.sendData.emit({ type: "updateData", data: this.frm.value });
+          }
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          const data = { ...this.frm.value };
+          this.frm.reset();
+          this.frm.setValue(data);
         }
-        if (data.oldTabID === this.tabID) {
-          this.sendData.emit({ type: "updateData", data: this.frm.value });
-        }
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        const data = { ...this.frm.value };
-        this.frm.reset();
-        this.frm.setValue(data);
-      }
-    });
+      });
   }
-  subscription: Subscription;
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   isNumber(evt: any) {
@@ -420,6 +456,20 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     // Update the total amount
     this.cdr.detectChanges();
     this.setTotalAmount();
+  }
+
+  updateDiscountForLineItem(cumulativeMonth, index, value: string) {
+    let lineItemForm = this.getFormArray(cumulativeMonth.value.lead_no)
+      .controls[index];
+    let group = lineItemForm.value.group;
+    if (!Number.isNaN(parseInt(group))) {
+      let amount =
+        Math.abs(parseInt(value)) > 100 ? 100 : Math.abs(parseInt(value));
+      let discount_amount = (parseInt(group) * amount) / 100;
+      lineItemForm.get("discount_amount").setValue(discount_amount);
+    } else {
+      lineItemForm.get("discount").setValue(0);
+    }
   }
 
   setTotalAmount() {
@@ -475,5 +525,28 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
   onTabChange(direction: string) {
     this.tabChange.emit(direction);
+  }
+
+  lineItemsForm = new FormGroup({});
+  getFormArray(key: string): FormArray {
+    return this.frm.get("Annextures").get(key) as FormArray;
+  }
+
+  addLineItemForLead(annexture: any) {
+    const formArray = this.getFormArray(annexture.value.lead_no);
+    const newFormGroup = this.formBuilder.group({
+      group: new FormControl(""),
+      description: new FormControl(""),
+      discount: new FormControl(""),
+      discount_amount: new FormControl(""),
+    });
+    formArray.push(newFormGroup);
+    if (!annexture.lineItems) annexture.lineItems = [];
+    annexture.lineItems.push(newFormGroup.value);
+  }
+
+  removeLineItemForLead(cumulativeMonth: any, index: number) {
+    const formArray = this.getFormArray(cumulativeMonth.lead_no);
+    formArray.removeAt(index);
   }
 }

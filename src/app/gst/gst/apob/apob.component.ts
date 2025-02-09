@@ -8,9 +8,10 @@ import {
 } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { CheckInputIsNumber } from "src/app/shared/utility/utility";
 import { GstService } from "../../gst.service";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-apob",
@@ -92,41 +93,50 @@ export class APOBComponent implements OnInit, OnDestroy {
       APOBNOC: [""],
     });
 
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      const authorizedSignatoryData = data.obj.Individual ? data.obj.Individual.find(el => el.isAuthorizedSignatory && el.isAuthorizedSignatory.toLowerCase() === 'yes') : null
-      if(authorizedSignatoryData) {
-        this.sampleInput.EmailId = authorizedSignatoryData.Email_Id || null;
-        this.sampleInput.ContactNumber = authorizedSignatoryData.Contact_Number || null;
-      }
+    this.service.sendDataSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        const authorizedSignatoryData = data.obj.Individual
+          ? data.obj.Individual.find(
+              (el) =>
+                el.isAuthorizedSignatory &&
+                el.isAuthorizedSignatory.toLowerCase() === "yes"
+            )
+          : null;
+        if (authorizedSignatoryData) {
+          this.sampleInput.EmailId = authorizedSignatoryData.Email_Id || null;
+          this.sampleInput.ContactNumber =
+            authorizedSignatoryData.Contact_Number || null;
+        }
 
-      if (data.type === "sendData") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        if (obj[this.tabID]) {
+        if (data.type === "sendData") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          if (obj[this.tabID]) {
+            this.loadData(obj);
+            this.getSiteAddress();
+          } else {
+            this.loadData(obj);
+          }
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          this.ckkNameAsSite =
+            obj && obj.PPOB && obj.PPOB.ckkNameAsSite
+              ? obj.PPOB.ckkNameAsSite
+              : [];
           this.loadData(obj);
           this.getSiteAddress();
-        } else {
-          this.loadData(obj);
+          // this.onSave();
+          // if (data.oldTabID === this.tabID) {
+          //   this.sendData.emit({ type: 'updateData', data: this.frm.value });
+          // }
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          // const data = { ...this.frm.value };
+          // this.frm.reset();
+          // this.frm.setValue(data);
         }
-      } else if (data.type === "TabChanged") {        
-        const obj = data.obj;  
-        this.btnDisabled = obj.isSubmit === true;
-        this.ckkNameAsSite =
-          obj && obj.PPOB && obj.PPOB.ckkNameAsSite
-            ? obj.PPOB.ckkNameAsSite
-            : [];
-        this.loadData(obj);
-        this.getSiteAddress();
-        // this.onSave();
-        // if (data.oldTabID === this.tabID) {
-        //   this.sendData.emit({ type: 'updateData', data: this.frm.value });
-        // }
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        // const data = { ...this.frm.value };
-        // this.frm.reset();
-        // this.frm.setValue(data);
-      }
-    });
+      });
   }
 
   loadData(obj: any) {
@@ -140,8 +150,10 @@ export class APOBComponent implements OnInit, OnDestroy {
     this.ckkNameAsSite =
       obj["PPOB"] && obj["PPOB"].ckkNameAsSite ? obj["PPOB"].ckkNameAsSite : [];
     const APOB_AddressDetails = this.service.APOB_AddressDetails();
-    const filterSites = this.ckkNameAsSite.filter((f) => f.checked === true);    
-    const contactData = obj.Individual ? obj.Individual.find(el => el.isAuthorizedSignatory === 'Yes') : null;
+    const filterSites = this.ckkNameAsSite.filter((f) => f.checked === true);
+    const contactData = obj.Individual
+      ? obj.Individual.find((el) => el.isAuthorizedSignatory === "Yes")
+      : null;
 
     if (APOBData) {
       this.APOBData = filterSites.map((item) => {
@@ -200,8 +212,10 @@ export class APOBComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   getSiteAddress() {

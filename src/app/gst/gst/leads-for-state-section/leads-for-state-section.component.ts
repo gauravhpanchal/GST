@@ -17,10 +17,11 @@ import {
   FormControl,
 } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { EmailPattern } from "src/app/shared/utility/constants";
 import { CheckInputIsNumber } from "src/app/shared/utility/utility";
 import { GstService } from "../../gst.service";
+import { filter, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-leads-for-state-section",
@@ -96,7 +97,6 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
   NameAsSiteListCollection: any[] = [];
   CA_AddressList: any[] = [];
   siteInfo: any = null;
-  subscription: Subscription;
   constructor(
     private formBuilder: FormBuilder,
     private route: Router,
@@ -165,35 +165,41 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
       LeadsToBeBilled: [],
     });
 
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      if (data.type === "sendData") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        if (obj[this.tabID]) {
-          //  need to remove
-          if (!obj[this.tabID].SellerBankAccountNumber) {
-            obj[this.tabID].SellerBankAccountNumber = "";
+    this.service.sendDataSubject
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((d) => d)
+      )
+      .subscribe((data) => {
+        if (data.type === "sendData") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          if (obj[this.tabID]) {
+            //  need to remove
+            if (!obj[this.tabID].SellerBankAccountNumber) {
+              obj[this.tabID].SellerBankAccountNumber = "";
+            }
+            if (!obj[this.tabID].Seller_PAN_Number) {
+              obj[this.tabID].Seller_PAN_Number = "";
+            }
+            if (!("GST_DATE" in obj[this.tabID])) {
+              obj[this.tabID]["GST_DATE"] = "";
+            }
+            this.frmSetValue(obj[this.tabID]);
           }
-          if (!obj[this.tabID].Seller_PAN_Number) {
-            obj[this.tabID].Seller_PAN_Number = "";
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          if (data.oldTabID === this.tabID || !data.oldTabID) {
+            this.sendData.emit({ type: "updateData", data: this.frm.value });
           }
-          if (!("GST_DATE" in obj[this.tabID])) {
-            obj[this.tabID]["GST_DATE"] = "";
-          }
-          this.frmSetValue(obj[this.tabID]);
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          const data = { ...this.frm.value };
+          this.frm.reset();
+          this.frmSetValue(data);
+          this.manageSelectedLeadForBilling();
         }
-      } else if (data.type === "TabChanged") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        if (data.oldTabID === this.tabID) {
-          this.sendData.emit({ type: "updateData", data: this.frm.value });
-        }
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        const data = { ...this.frm.value };
-        this.frm.reset();
-        this.frmSetValue(data);
-      }
-    });
+      });
 
     // Create form controls for each month
     this.avlMonths.forEach(() => {
@@ -215,7 +221,9 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
     if (!data["TypeOfBilling"]) data["TypeOfBilling"] = "";
     if (!data["TypeOfBillingDate"]) data["TypeOfBillingDate"] = "";
 
-    this.frm.setValue({ ...data, LeadsToBeBilled: [] });
+    if (!data.LeadsToBeBilled) data.LeadsToBeBilled = [];
+
+    this.frm.setValue({ ...data });
 
     setTimeout(() => {
       this.onChangeLeadGeneratedBY();
@@ -225,8 +233,10 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onSubmit() {
@@ -268,7 +278,6 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
   }
 
   selectedCA_Address: any = "-1";
-
   CA_AddressChange() {
     this.AnnexureCumulativeMonth();
     const CA_Address = this.frm.get("CA_Address").value;
@@ -307,12 +316,12 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
               selected: false,
             };
           });
-          this.cumulativeMonth = this.allCumulativeMonth = res as any[];
+          this.allCumulativeMonth = res as any[];
 
           if (this.frm.get("TypeOfBilling").value == "CumulativeMonthly") {
             this.avlYears = [
               ...new Set(
-                this.cumulativeMonth.map((c) =>
+                this.allCumulativeMonth.map((c) =>
                   new Date(c.Lead_date).getFullYear()
                 )
               ),
@@ -321,33 +330,44 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
             this.cumulativeMonth = this.cumulativeMonth.filter(
               (item) => item.Lead_no === this.frm.get("Lead_no").value
             );
+            this.frm
+              .get("LeadsToBeBilled")
+              .setValue(this.cumulativeMonth.map((c) => c.Lead_no));
           }
-          const month = new Date(
-            this.frm.get("TypeOfBillingDate").value
-          ).getMonth();
-          const year = new Date(
-            this.frm.get("TypeOfBillingDate").value
-          ).getFullYear();
-          this.cumulativeMonth = this.cumulativeMonth.filter(
-            (el) =>
-              new Date(el.AGMT_Start_Date).getMonth() == month &&
-              new Date(el.AGMT_Start_Date).getFullYear() == year
-          );
-          this.cumulativeMonth = this.cumulativeMonth.sort((a, b) => {
-            return (
-              new Date(a.AGMT_Start_Date).valueOf() -
-                new Date(b.AGMT_Start_Date).valueOf() || a.Lead_no - b.Lead_no
-            );
-          });
-          if (this.frm.get("TypeOfBilling").value == "CumulativeMonthly") {
-            this.cumulativeMonth.forEach((item) => {
-              this.updateSelected(item);
-            });
-          }
-          this.filteredData = this.cumulativeMonth;
+          // const month = new Date(
+          //   this.frm.get("TypeOfBillingDate").value
+          // ).getMonth();
+          // const year = new Date(
+          //   this.frm.get("TypeOfBillingDate").value
+          // ).getFullYear();
+          // this.cumulativeMonth = this.cumulativeMonth.filter(
+          //   (el) =>
+          //     new Date(el.AGMT_Start_Date).getMonth() == month &&
+          //     new Date(el.AGMT_Start_Date).getFullYear() == year
+          // );
+          // this.cumulativeMonth = this.cumulativeMonth.sort((a, b) => {
+          //   return (
+          //     new Date(a.AGMT_Start_Date).valueOf() -
+          //       new Date(b.AGMT_Start_Date).valueOf() || a.Lead_no - b.Lead_no
+          //   );
+          // });
+          // if (this.frm.get("TypeOfBilling").value == "CumulativeMonthly") {
+          //   this.cumulativeMonth.forEach((item) => {
+          //     this.updateSelected(item);
+          //   });
+          // }
+          // this.filteredData = this.cumulativeMonth;
         }
       });
     }
+  }
+
+  manageSelectedLeadForBilling() {
+    this.allCumulativeMonth
+      .filter((item) => this.leadsSelectedForBilling.includes(item.lead_no))
+      .forEach((item) => {
+        this.updateSelected(item);
+      });
   }
 
   get monthsFormArray() {
@@ -365,8 +385,8 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
       .map((control, index) => (control.value ? this.avlMonths[index] : null))
       .filter((month) => month !== null);
 
-    if (selectedMonths.length === 0 && selectedYear == "-1") {
-      this.filteredData = this.cumulativeMonth;
+    if (selectedMonths.length === 0 || selectedYear == "-1") {
+      this.filteredData = [];
       return;
     }
 
@@ -389,6 +409,7 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
     });
   }
 
+  leadsSelectedForBilling: any[] = [];
   updateSelected(cate: any) {
     let leadsSelected = this.frm.get("LeadsToBeBilled").value;
     cate.selected = !cate.selected;
@@ -397,6 +418,6 @@ export class LeadsForStateSectionComponent implements OnInit, OnDestroy {
     } else {
       leadsSelected = leadsSelected.filter((f) => f !== cate.Lead_no);
     }
-    this.frm.get("LeadsToBeBilled").setValue(leadsSelected);
+    this.leadsSelectedForBilling = leadsSelected;
   }
 }

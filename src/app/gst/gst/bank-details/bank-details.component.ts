@@ -8,8 +8,9 @@ import {
 } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { GstService } from "../../gst.service";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-bank-details",
@@ -76,39 +77,43 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
       Attachments: [[]],
     });
 
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      if (data.type === "sendData") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        this.setData(obj);
+    this.service.sendDataSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (data.type === "sendData") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          this.setData(obj);
 
-        const frmData = obj[this.tabID];
-        if (frmData && !frmData.Attachments) {
-          frmData.Attachments = [];
-        }
+          const frmData = obj[this.tabID];
+          if (frmData && !frmData.Attachments) {
+            frmData.Attachments = [];
+          }
 
-        if (obj[this.tabID]) this.frm.setValue(frmData);
+          if (obj[this.tabID]) this.frm.setValue(frmData);
 
-        if (obj[this.tabID] && obj[this.tabID].Attachments) {
-          this.AttachmentsFileDetails = obj[this.tabID].Attachments;
+          if (obj[this.tabID] && obj[this.tabID].Attachments) {
+            this.AttachmentsFileDetails = obj[this.tabID].Attachments;
+          }
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          this.setData(obj);
+          if (data.oldTabID === this.tabID || !data.oldTabID) {
+            this.sendData.emit({ type: "updateData", data: this.frm.value });
+          }
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          const data = { ...this.frm.value };
+          this.frm.reset();
+          this.frm.setValue(data);
         }
-      } else if (data.type === "TabChanged") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        this.setData(obj);
-        if (data.oldTabID === this.tabID) {
-          this.sendData.emit({ type: "updateData", data: this.frm.value });
-        }
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        const data = { ...this.frm.value };
-        this.frm.reset();
-        this.frm.setValue(data);
-      }
-    });
+      });
   }
-  subscription: Subscription;
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   setData(data: any) {
@@ -121,7 +126,8 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
         Amount: leadsForState.Value_of_AGMT,
         Account_Number: leadsForState.SellerBankAccountNumber,
       });
-      this.isReadOnly = leadsForState.TypeOfBilling == "CumulativeMonthly" ? false : true;
+      this.isReadOnly =
+        leadsForState.TypeOfBilling == "CumulativeMonthly" ? false : true;
     }
   }
 

@@ -2,20 +2,20 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ApiLinkService } from "../shared/api-link.service";
 import { AuthenticateService } from "../guard/authenticate.service";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class GstService {
-  public sendDataSubject = new Subject<any>();
+  public sendDataSubject = new BehaviorSubject<any>(null);
   public IndividualInfoSubject = new Subject<any>();
   public APOBSubject = new Subject<any>();
   constructor(
     private http: HttpClient,
     private api: ApiLinkService,
     private auth: AuthenticateService
-  ) { }
+  ) {}
 
   headers = new HttpHeaders({
     "Content-Type": "application/json",
@@ -24,6 +24,10 @@ export class GstService {
 
   sendData(value: any) {
     this.sendDataSubject.next(value);
+  }
+
+  getValue() {
+    return this.sendDataSubject.value;
   }
 
   sendIndividualInfoData(value: any) {
@@ -214,7 +218,8 @@ export class GstService {
         DoorNoPremisesNo: "",
         FloorNo: "Office No. I-1, I2/29,32",
         BuildingPremiseName: "Ambika Nilayam",
-        AreaStreetRoadName: "Hyderabad Road, Near Gharkul Police Station, Bidi Gharkul, Solapur",
+        AreaStreetRoadName:
+          "Hyderabad Road, Near Gharkul Police Station, Bidi Gharkul, Solapur",
         SubLocalityLocality: "",
         City: "",
         Pincode: "413005",
@@ -233,7 +238,8 @@ export class GstService {
         DoorNoPremisesNo: "SHOP NO 6",
         FloorNo: "GROUND FLOOR",
         BuildingPremiseName: "CITY CENTRE",
-        AreaStreetRoadName: "930-931 SYNAGOGUE STREET, NEXT TO TANDEL MASJID, OPPOSITE PUNJAB, NATIONAL BANK",
+        AreaStreetRoadName:
+          "930-931 SYNAGOGUE STREET, NEXT TO TANDEL MASJID, OPPOSITE PUNJAB, NATIONAL BANK",
         SubLocalityLocality: "CAMP",
         City: "Pune",
         Pincode: "411001",
@@ -334,7 +340,7 @@ export class GstService {
         STATE: "",
         GSTN: "",
         STATE_CODE: "",
-        PAN_NO: ""
+        PAN_NO: "",
       },
     ];
   }
@@ -537,7 +543,7 @@ export class GstService {
   DownloadData(data) {
     return this.http.post(this.api.server + `GST/download`, data, {
       headers: this.headers,
-      responseType: "blob"
+      responseType: "blob",
     });
   }
 }

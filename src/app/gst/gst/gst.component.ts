@@ -81,17 +81,17 @@ export class GSTComponent implements OnInit {
     this.GST_Data[`${this.selectedTabID}`] = obj.data;
     if (obj.type === "save") {
       console.log("Save", this.GST_Data);
-      // this.service
-      //   .saveGST_Details(this.GST_Data, this.ID)
-      //   .subscribe((res: any) => {
-      //     // this.frm.reset();
-      //     if (!this.ID) {
-      //       this.route.navigate(["Leads", "update", res.ID]);
-      //     } else if (res.ID) {
-      //       this.ID = res.ID;
-      //       this.service.sendData({ type: "Saved", obj: this.GST_Data });
-      //     }
-      //   });
+      this.service
+        .saveGST_Details(this.GST_Data, this.ID)
+        .subscribe((res: any) => {
+          // this.frm.reset();
+          if (!this.ID) {
+            this.route.navigate(["Leads", "update", res.ID]);
+          } else if (res.ID) {
+            this.ID = res.ID;
+            this.service.sendData({ type: "Saved", obj: this.GST_Data });
+          }
+        });
     } else if (obj.type === "submit") {
       this.GST_Data["isSubmit"] = true;
       this.service

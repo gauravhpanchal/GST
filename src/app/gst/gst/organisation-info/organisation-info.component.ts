@@ -9,12 +9,13 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { EmailPattern } from "src/app/shared/utility/constants";
 import { CheckInputIsNumber } from "src/app/shared/utility/utility";
 import { GstService } from "../../gst.service";
 import { BsModalService, BsModalRef } from "ngx-bootstrap/modal";
 import { v4 as uuidv4 } from "uuid";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-organisation-info",
@@ -131,89 +132,93 @@ export class OrganisationInfoComponent implements OnInit, OnDestroy {
       Composite_Seller: [""],
     });
 
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      if (data.type === "sendData") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        if (obj[this.tabID]) {
-          const data = obj[this.tabID];
-          // need to remove
-          if (!data.Service_HSN_number) {
-            data.Service_HSN_number = "";
+    this.service.sendDataSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (data.type === "sendData") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          if (obj[this.tabID]) {
+            const data = obj[this.tabID];
+            // need to remove
+            if (!data.Service_HSN_number) {
+              data.Service_HSN_number = "";
+            }
+            if (!data.Service_HSN_number_Items) {
+              data.Service_HSN_number_Items = [];
+            }
+
+            if (!data.Composite_Seller) {
+              data.Composite_Seller = "";
+            }
+            // need to remove End
+
+            this.frm.setValue(data);
+            setTimeout(() => {
+              this.setData(obj);
+            }, 100);
           }
-          if (!data.Service_HSN_number_Items) {
-            data.Service_HSN_number_Items = [];
+          if (obj[this.tabID] && obj[this.tabID].Attachments) {
+            this.AttachmentsFileDetails = obj[this.tabID].Attachments;
           }
 
-          if (!data.Composite_Seller) {
-            data.Composite_Seller = "";
+          if (obj[this.tabID] && obj[this.tabID].Product_HSN_number_Items) {
+            this.ProductHSNTagNumbers =
+              obj[this.tabID].Product_HSN_number_Items;
           }
-          // need to remove End
 
+          if (obj[this.tabID] && obj[this.tabID].Service_HSN_number_Items) {
+            this.ServiceHSNTagNumbers =
+              obj[this.tabID].Service_HSN_number_Items;
+          }
+
+          if (obj[this.tabID] && obj[this.tabID].GST_Details) {
+            this.GST_Details = obj[this.tabID].GST_Details;
+          }
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          this.setData(obj);
+
+          if (
+            obj.LeadsForStateSection &&
+            (obj.LeadsForStateSection.HOME_STATE_GST_NO ||
+              obj.LeadsForStateSection.GST_State)
+          ) {
+            const homeStateGstData = {
+              GST_Date: obj.LeadsForStateSection.GST_DATE,
+              GST_Number: obj.LeadsForStateSection.HOME_STATE_GST_NO,
+              GST_State: obj.LeadsForStateSection.GST_State,
+              GST_Status:
+                obj.LeadsForStateSection.GTS_Status != "-1"
+                  ? obj.LeadsForStateSection.GTS_Status
+                  : "",
+            };
+
+            const gstData = this.frm.get("GST_Details").value;
+            const otherStateGstData = gstData
+              ? gstData.filter(
+                  (el) =>
+                    el.GST_State != obj.LeadsForStateSection.GST_State &&
+                    el.GST_Number != obj.LeadsForStateSection.HOME_STATE_GST_NO
+                )
+              : [];
+
+            this.frm
+              .get("GST_Details")
+              .setValue([homeStateGstData, ...otherStateGstData]);
+            this.GST_Details = [homeStateGstData, ...otherStateGstData];
+          }
+
+          if (data.oldTabID === this.tabID || !data.oldTabID) {
+            this.sendData.emit({ type: "updateData", data: this.frm.value });
+          }
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          const data = { ...this.frm.value };
+          this.frm.reset();
           this.frm.setValue(data);
-          setTimeout(() => {
-            this.setData(obj);
-          }, 100);
         }
-        if (obj[this.tabID] && obj[this.tabID].Attachments) {
-          this.AttachmentsFileDetails = obj[this.tabID].Attachments;
-        }
-
-        if (obj[this.tabID] && obj[this.tabID].Product_HSN_number_Items) {
-          this.ProductHSNTagNumbers = obj[this.tabID].Product_HSN_number_Items;
-        }
-
-        if (obj[this.tabID] && obj[this.tabID].Service_HSN_number_Items) {
-          this.ServiceHSNTagNumbers = obj[this.tabID].Service_HSN_number_Items;
-        }
-
-        if (obj[this.tabID] && obj[this.tabID].GST_Details) {
-          this.GST_Details = obj[this.tabID].GST_Details;
-        }
-      } else if (data.type === "TabChanged") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        this.setData(obj);
-
-        if (
-          obj.LeadsForStateSection &&
-          (obj.LeadsForStateSection.HOME_STATE_GST_NO ||
-            obj.LeadsForStateSection.GST_State)
-        ) {
-          const homeStateGstData = {
-            GST_Date: obj.LeadsForStateSection.GST_DATE,
-            GST_Number: obj.LeadsForStateSection.HOME_STATE_GST_NO,
-            GST_State: obj.LeadsForStateSection.GST_State,
-            GST_Status:
-              obj.LeadsForStateSection.GTS_Status != "-1"
-                ? obj.LeadsForStateSection.GTS_Status
-                : "",
-          };
-
-          const gstData = this.frm.get("GST_Details").value;
-          const otherStateGstData = gstData
-            ? gstData.filter(
-                (el) =>
-                  el.GST_State != obj.LeadsForStateSection.GST_State &&
-                  el.GST_Number != obj.LeadsForStateSection.HOME_STATE_GST_NO
-              )
-            : [];
-
-          this.frm
-            .get("GST_Details")
-            .setValue([homeStateGstData, ...otherStateGstData]);
-          this.GST_Details = [homeStateGstData, ...otherStateGstData];
-        }
-
-        if (data.oldTabID === this.tabID) {
-          this.sendData.emit({ type: "updateData", data: this.frm.value });
-        }
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        const data = { ...this.frm.value };
-        this.frm.reset();
-        this.frm.setValue(data);
-      }
-    });
+      });
   }
 
   setData(data: any) {
@@ -229,9 +234,11 @@ export class OrganisationInfoComponent implements OnInit, OnDestroy {
       });
     }
   }
-  subscription: Subscription;
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onSubmit() {

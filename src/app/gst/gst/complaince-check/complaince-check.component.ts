@@ -8,8 +8,9 @@ import {
 } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { GstService } from "../../gst.service";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-complaince-check",
@@ -76,34 +77,38 @@ export class ComplainceCheckComponent implements OnInit, OnDestroy {
       IssueLetterToGST: ["-1"],
     });
 
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      if (data.type === "sendData") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        this.getAllImagesData(obj);
-        if (obj[this.tabID]) {
-          const data = obj[this.tabID];
+    this.service.sendDataSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (data.type === "sendData") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          this.getAllImagesData(obj);
+          if (obj[this.tabID]) {
+            const data = obj[this.tabID];
+            this.autoFillData(obj);
+            this.frm.setValue(data);
+          }
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
           this.autoFillData(obj);
+          this.getAllImagesData(obj);
+          if (data.oldTabID === this.tabID || !data.oldTabID) {
+            this.sendData.emit({ type: "updateData", data: this.frm.value });
+          }
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          const data = { ...this.frm.value };
+          this.frm.reset();
           this.frm.setValue(data);
         }
-      } else if (data.type === "TabChanged") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        this.autoFillData(obj);
-        this.getAllImagesData(obj);
-        if (data.oldTabID === this.tabID) {
-          this.sendData.emit({ type: "updateData", data: this.frm.value });
-        }
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        const data = { ...this.frm.value };
-        this.frm.reset();
-        this.frm.setValue(data);
-      }
-    });
+      });
   }
-  subscription: Subscription;
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onSubmit() {

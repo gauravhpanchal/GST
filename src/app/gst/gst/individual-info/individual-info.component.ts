@@ -9,10 +9,11 @@ import {
 } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { EmailPattern } from "src/app/shared/utility/constants";
 import { CheckInputIsNumber } from "src/app/shared/utility/utility";
 import { GstService } from "../../gst.service";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "app-individual-info",
@@ -20,7 +21,8 @@ import { GstService } from "../../gst.service";
   styleUrls: ["./individual-info.component.scss"],
 })
 export class IndividualInfoComponent
-  implements OnInit, OnDestroy, AfterContentInit {
+  implements OnInit, OnDestroy, AfterContentInit
+{
   @Input("ID") ID: string = "";
   @Input("tabID") tabID: string = "";
   @Input("selectedTabID") selectedTabID: string = "";
@@ -128,49 +130,53 @@ export class IndividualInfoComponent
     //   PassportNo: ['', Validators.pattern('^([A-Z a-z]){1}([0-9]){7}$')]
     // });
 
-    this.subscription = this.service.sendDataSubject.subscribe((data) => {
-      if (data.type === "sendData") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        if (obj[this.tabID]) {
-          this.individualData = [];
-          this.individualData =
-            obj[this.tabID] && Array.isArray(obj[this.tabID])
-              ? obj[this.tabID].map((item) => {
-                item.isExpend = true;
-                return item;
-              })
-              : [{ ...this.individualFrmObj }];
-          this.service.sendIndividualInfoData({
-            type: "setData",
-            data: this.individualData,
-          });
-          ///this.frm.setValue(obj[this.tabID]);
-          // if (obj[this.tabID].Picture) {
-          //   this.PictureFileDetails = obj[this.tabID].Picture
-          // }
+    this.service.sendDataSubject
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (data.type === "sendData") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          if (obj[this.tabID]) {
+            this.individualData = [];
+            this.individualData =
+              obj[this.tabID] && Array.isArray(obj[this.tabID])
+                ? obj[this.tabID].map((item) => {
+                    item.isExpend = true;
+                    return item;
+                  })
+                : [{ ...this.individualFrmObj }];
+            this.service.sendIndividualInfoData({
+              type: "setData",
+              data: this.individualData,
+            });
+            ///this.frm.setValue(obj[this.tabID]);
+            // if (obj[this.tabID].Picture) {
+            //   this.PictureFileDetails = obj[this.tabID].Picture
+            // }
+          }
+        } else if (data.type === "TabChanged") {
+          const obj = data.obj;
+          this.btnDisabled = obj.isSubmit === true;
+          if (data.oldTabID === this.tabID || !data.oldTabID) {
+            this.service.sendIndividualInfoData({ type: "TabChanged" });
+            // this.onSave();
+          }
+        } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
+          //const data = { ...this.frm.value };
+          // this.frm.reset();
+          // this.frm.setValue(data);
         }
-      } else if (data.type === "TabChanged") {
-        const obj = data.obj;
-        this.btnDisabled = obj.isSubmit === true;
-        if (data.oldTabID === this.tabID) {
-          this.service.sendIndividualInfoData({ type: "TabChanged" });
-          // this.onSave();
-        }
-      } else if (data.type === "Saved" && this.tabID === this.selectedTabID) {
-        //const data = { ...this.frm.value };
-        // this.frm.reset();
-        // this.frm.setValue(data);
-      }
-    });
+      });
   }
 
   AddNewIndividualClick() {
     this.addNewIndividual.emit();
   }
-  subscription: Subscription;
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
   ngOnDestroy() {
-    if (this.subscription) this.subscription.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onSave() {
